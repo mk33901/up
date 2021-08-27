@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Jobs;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class JobsController extends Controller
 {
@@ -12,9 +13,22 @@ class JobsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Jobs = Jobs::paginate($per_page);
+
+            $data['data'] = $Jobs;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,27 +49,25 @@ class JobsController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $Jobs =new Jobs();
-            $Jobs->create($request->except('_token'));
-            $success['data'] = $Jobs;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Jobs = Jobs::create($request->except('_token'));
+            $this->images($request,$Jobs);
+            $data['data'] = $Jobs;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Jobs  $jobs
+     * @param  \App\Jobs  $Jobs
      * @return \Illuminate\Http\Response
      */
-    public function show(Jobs $jobs)
+    public function show(Jobs $Jobs)
     {
         //
     }
@@ -63,10 +75,10 @@ class JobsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Jobs  $jobs
+     * @param  \App\Jobs  $Jobs
      * @return \Illuminate\Http\Response
      */
-    public function edit(Jobs $jobs)
+    public function edit(Jobs $Jobs)
     {
         //
     }
@@ -75,32 +87,50 @@ class JobsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Jobs  $jobs
+     * @param  \App\Jobs  $Jobs
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Jobs $jobs)
+    public function update(Request $request,$id)
     {
-        try {
-            $jobs->update($request->except('_token'));
-            $success['data'] = $jobs;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Jobs = Jobs::find($id);
+            $Jobs->update($request->except(['_token','id','created_at','updated_at']));
+            $this->images($request,$Jobs);
+            $data['data'] = $Jobs;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Jobs  $jobs
+     * @param  \App\Jobs  $Jobs
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Jobs $jobs)
+    public function destroy(Jobs $Jobs)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        try{
+            $all = $request->all();
+            $Jobs = new Jobs();
+            foreach($all as $k=>$a){
+                $Jobs = $Jobs->where($k,'like','%'.$a. '%');
+            }
+            $Jobs =$Jobs->paginate(8);
+            $data['data'] =  $Jobs;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

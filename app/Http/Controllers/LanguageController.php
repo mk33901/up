@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Language;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class LanguageController extends Controller
 {
@@ -12,9 +13,22 @@ class LanguageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Language = Language::paginate($per_page);
+
+            $data['data'] = $Language;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,27 +49,25 @@ class LanguageController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $Language =new Language();
-            $Language->create($request->except('_token'));
-            $success['data'] = $Language;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Language = Language::create($request->except('_token'));
+            $this->images($request,$Language);
+            $data['data'] = $Language;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Language  $language
+     * @param  \App\Language  $Language
      * @return \Illuminate\Http\Response
      */
-    public function show(Language $language)
+    public function show(Language $Language)
     {
         //
     }
@@ -63,10 +75,10 @@ class LanguageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Language  $language
+     * @param  \App\Language  $Language
      * @return \Illuminate\Http\Response
      */
-    public function edit(Language $language)
+    public function edit(Language $Language)
     {
         //
     }
@@ -75,32 +87,50 @@ class LanguageController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Language  $language
+     * @param  \App\Language  $Language
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Language $language)
+    public function update(Request $request,$id)
     {
-        try {
-            $language->update($request->except('_token'));
-            $success['data'] = $language;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Language = Language::find($id);
+            $Language->update($request->except(['_token','id','created_at','updated_at']));
+            $this->images($request,$Language);
+            $data['data'] = $Language;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Language  $language
+     * @param  \App\Language  $Language
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Language $language)
+    public function destroy(Language $Language)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        try{
+            $all = $request->all();
+            $Language = new Language();
+            foreach($all as $k=>$a){
+                $Language = $Language->where($k,'like','%'.$a. '%');
+            }
+            $Language =$Language->paginate(8);
+            $data['data'] =  $Language;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

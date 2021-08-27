@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Expirence;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ExpirenceController extends Controller
 {
@@ -12,9 +13,22 @@ class ExpirenceController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Expirence = Expirence::paginate($per_page);
+
+            $data['data'] = $Expirence;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,27 +49,25 @@ class ExpirenceController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $Expirence =new Expirence();
-            $Expirence->create($request->except('_token'));
-            $success['data'] = $Expirence;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Expirence = Expirence::create($request->except('_token'));
+            $this->images($request,$Expirence);
+            $data['data'] = $Expirence;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Expirence  $expirence
+     * @param  \App\Expirence  $Expirence
      * @return \Illuminate\Http\Response
      */
-    public function show(Expirence $expirence)
+    public function show(Expirence $Expirence)
     {
         //
     }
@@ -63,10 +75,10 @@ class ExpirenceController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Expirence  $expirence
+     * @param  \App\Expirence  $Expirence
      * @return \Illuminate\Http\Response
      */
-    public function edit(Expirence $expirence)
+    public function edit(Expirence $Expirence)
     {
         //
     }
@@ -75,32 +87,50 @@ class ExpirenceController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Expirence  $expirence
+     * @param  \App\Expirence  $Expirence
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Expirence $expirence)
+    public function update(Request $request,$id)
     {
-        try {
-            $expirence->update($request->except('_token'));
-            $success['data'] = $expirence;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Expirence = Expirence::find($id);
+            $Expirence->update($request->except(['_token','id','created_at','updated_at']));
+            $this->images($request,$Expirence);
+            $data['data'] = $Expirence;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Expirence  $expirence
+     * @param  \App\Expirence  $Expirence
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Expirence $expirence)
+    public function destroy(Expirence $Expirence)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        try{
+            $all = $request->all();
+            $Expirence = new Expirence();
+            foreach($all as $k=>$a){
+                $Expirence = $Expirence->where($k,'like','%'.$a. '%');
+            }
+            $Expirence =$Expirence->paginate(8);
+            $data['data'] =  $Expirence;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

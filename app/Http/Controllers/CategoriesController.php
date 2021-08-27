@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Categories;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class CategoriesController extends Controller
 {
@@ -12,9 +13,22 @@ class CategoriesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Categories = Categories::paginate($per_page);
+
+            $data['data'] = $Categories;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,27 +49,25 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $Categories =new Categories();
-            $Categories->create($request->except('_token'));
-            $success['data'] = $Categories;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Categories = Categories::create($request->except('_token'));
+            $this->images($request,$Categories);
+            $data['data'] = $Categories;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Categories  $categories
+     * @param  \App\Categories  $Categories
      * @return \Illuminate\Http\Response
      */
-    public function show(Categories $categories)
+    public function show(Categories $Categories)
     {
         //
     }
@@ -63,10 +75,10 @@ class CategoriesController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Categories  $categories
+     * @param  \App\Categories  $Categories
      * @return \Illuminate\Http\Response
      */
-    public function edit(Categories $categories)
+    public function edit(Categories $Categories)
     {
         //
     }
@@ -75,32 +87,50 @@ class CategoriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Categories  $categories
+     * @param  \App\Categories  $Categories
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Categories $categories)
+    public function update(Request $request,$id)
     {
-        try {
-            $categories->update($request->except('_token'));
-            $success['data'] = $categories;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Categories = Categories::find($id);
+            $Categories->update($request->except(['_token','id','created_at','updated_at']));
+            $this->images($request,$Categories);
+            $data['data'] = $Categories;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Categories  $categories
+     * @param  \App\Categories  $Categories
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Categories $categories)
+    public function destroy(Categories $Categories)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        try{
+            $all = $request->all();
+            $Categories = new Categories();
+            foreach($all as $k=>$a){
+                $Categories = $Categories->where($k,'like','%'.$a. '%');
+            }
+            $Categories =$Categories->paginate(8);
+            $data['data'] =  $Categories;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

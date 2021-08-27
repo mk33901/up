@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Skills;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class SkillsController extends Controller
 {
@@ -12,9 +13,22 @@ class SkillsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Skills = Skills::paginate($per_page);
+
+            $data['data'] = $Skills;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,27 +49,25 @@ class SkillsController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $Skills =new Skills();
-            $Skills->create($request->except('_token'));
-            $success['data'] = $Skills;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Skills = Skills::create($request->except('_token'));
+            $this->images($request,$Skills);
+            $data['data'] = $Skills;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Skills  $skills
+     * @param  \App\Skills  $Skills
      * @return \Illuminate\Http\Response
      */
-    public function show(Skills $skills)
+    public function show(Skills $Skills)
     {
         //
     }
@@ -63,10 +75,10 @@ class SkillsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Skills  $skills
+     * @param  \App\Skills  $Skills
      * @return \Illuminate\Http\Response
      */
-    public function edit(Skills $skills)
+    public function edit(Skills $Skills)
     {
         //
     }
@@ -75,32 +87,50 @@ class SkillsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Skills  $skills
+     * @param  \App\Skills  $Skills
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Skills $skills)
+    public function update(Request $request,$id)
     {
-        try {
-            $skills->update($request->except('_token'));
-            $success['data'] = $skills;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Skills = Skills::find($id);
+            $Skills->update($request->except(['_token','id','created_at','updated_at']));
+            $this->images($request,$Skills);
+            $data['data'] = $Skills;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Skills  $skills
+     * @param  \App\Skills  $Skills
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Skills $skills)
+    public function destroy(Skills $Skills)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        try{
+            $all = $request->all();
+            $Skills = new Skills();
+            foreach($all as $k=>$a){
+                $Skills = $Skills->where($k,'like','%'.$a. '%');
+            }
+            $Skills =$Skills->paginate(8);
+            $data['data'] =  $Skills;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

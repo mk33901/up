@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Message;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class MessageController extends Controller
 {
@@ -12,9 +13,22 @@ class MessageController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Message = Message::paginate($per_page);
+
+            $data['data'] = $Message;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,27 +49,25 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $Message =new Message();
-            $Message->create($request->except('_token'));
-            $success['data'] = $Message;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Message = Message::create($request->except('_token'));
+            $this->images($request,$Message);
+            $data['data'] = $Message;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Message  $message
+     * @param  \App\Message  $Message
      * @return \Illuminate\Http\Response
      */
-    public function show(Message $message)
+    public function show(Message $Message)
     {
         //
     }
@@ -63,10 +75,10 @@ class MessageController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Message  $message
+     * @param  \App\Message  $Message
      * @return \Illuminate\Http\Response
      */
-    public function edit(Message $message)
+    public function edit(Message $Message)
     {
         //
     }
@@ -75,22 +87,50 @@ class MessageController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Message  $message
+     * @param  \App\Message  $Message
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Message $message)
+    public function update(Request $request,$id)
     {
-        //
+        try{
+            $Message = Message::find($id);
+            $Message->update($request->except(['_token','id','created_at','updated_at']));
+            $this->images($request,$Message);
+            $data['data'] = $Message;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Message  $message
+     * @param  \App\Message  $Message
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Message $message)
+    public function destroy(Message $Message)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        try{
+            $all = $request->all();
+            $Message = new Message();
+            foreach($all as $k=>$a){
+                $Message = $Message->where($k,'like','%'.$a. '%');
+            }
+            $Message =$Message->paginate(8);
+            $data['data'] =  $Message;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TestimonialController extends Controller
 {
@@ -12,9 +13,22 @@ class TestimonialController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Testimonial = Testimonial::paginate($per_page);
+
+            $data['data'] = $Testimonial;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,27 +49,25 @@ class TestimonialController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $Testimonial =new Testimonial();
-            $Testimonial->create($request->except('_token'));
-            $success['data'] = $Testimonial;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Testimonial = Testimonial::create($request->except('_token'));
+            $this->images($request,$Testimonial);
+            $data['data'] = $Testimonial;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Testimonial  $testimonial
+     * @param  \App\Testimonial  $Testimonial
      * @return \Illuminate\Http\Response
      */
-    public function show(Testimonial $testimonial)
+    public function show(Testimonial $Testimonial)
     {
         //
     }
@@ -63,10 +75,10 @@ class TestimonialController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Testimonial  $testimonial
+     * @param  \App\Testimonial  $Testimonial
      * @return \Illuminate\Http\Response
      */
-    public function edit(Testimonial $testimonial)
+    public function edit(Testimonial $Testimonial)
     {
         //
     }
@@ -75,32 +87,50 @@ class TestimonialController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Testimonial  $testimonial
+     * @param  \App\Testimonial  $Testimonial
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Testimonial $testimonial)
+    public function update(Request $request,$id)
     {
-        try {
-            $testimonial->update($request->except('_token'));
-            $success['data'] = $testimonial;
-            $success['success'] = true;
-            $success['message'] = "Success";
-            return $this->sendResponse($success);
-        } catch (\Exception $e) {
-            $success['success'] = false;
-            $success['error'] = "Error";
-            return $this->sendResponse($success, 401);
+        try{
+            $Testimonial = Testimonial::find($id);
+            $Testimonial->update($request->except(['_token','id','created_at','updated_at']));
+            $this->images($request,$Testimonial);
+            $data['data'] = $Testimonial;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Testimonial  $testimonial
+     * @param  \App\Testimonial  $Testimonial
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Testimonial $testimonial)
+    public function destroy(Testimonial $Testimonial)
     {
         //
+    }
+
+    public function search(Request $request)
+    {
+        try{
+            $all = $request->all();
+            $Testimonial = new Testimonial();
+            foreach($all as $k=>$a){
+                $Testimonial = $Testimonial->where($k,'like','%'.$a. '%');
+            }
+            $Testimonial =$Testimonial->paginate(8);
+            $data['data'] =  $Testimonial;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

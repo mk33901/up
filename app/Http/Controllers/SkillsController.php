@@ -51,7 +51,7 @@ class SkillsController extends Controller
     {
         try{
             $Skills = Skills::create($request->except('_token'));
-            $this->images($request,$Skills);
+            //$this->images($request,$Skills);
             $data['data'] = $Skills;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class SkillsController extends Controller
         try{
             $Skills = Skills::find($id);
             $Skills->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Skills);
+            //$this->images($request,$Skills);
             $data['data'] = $Skills;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

@@ -51,7 +51,7 @@ class ExpirenceController extends Controller
     {
         try{
             $Expirence = Expirence::create($request->except('_token'));
-            $this->images($request,$Expirence);
+            //$this->images($request,$Expirence);
             $data['data'] = $Expirence;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class ExpirenceController extends Controller
         try{
             $Expirence = Expirence::find($id);
             $Expirence->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Expirence);
+            //$this->images($request,$Expirence);
             $data['data'] = $Expirence;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

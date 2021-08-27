@@ -51,7 +51,7 @@ class TestimonialController extends Controller
     {
         try{
             $Testimonial = Testimonial::create($request->except('_token'));
-            $this->images($request,$Testimonial);
+            //$this->images($request,$Testimonial);
             $data['data'] = $Testimonial;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class TestimonialController extends Controller
         try{
             $Testimonial = Testimonial::find($id);
             $Testimonial->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Testimonial);
+            //$this->images($request,$Testimonial);
             $data['data'] = $Testimonial;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

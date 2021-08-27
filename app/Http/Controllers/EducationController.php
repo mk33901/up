@@ -51,7 +51,7 @@ class EducationController extends Controller
     {
         try{
             $Education = Education::create($request->except('_token'));
-            $this->images($request,$Education);
+            //$this->images($request,$Education);
             $data['data'] = $Education;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class EducationController extends Controller
         try{
             $Education = Education::find($id);
             $Education->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Education);
+            //$this->images($request,$Education);
             $data['data'] = $Education;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

@@ -51,7 +51,7 @@ class CategoriesController extends Controller
     {
         try{
             $Categories = Categories::create($request->except('_token'));
-            $this->images($request,$Categories);
+            //$this->images($request,$Categories);
             $data['data'] = $Categories;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class CategoriesController extends Controller
         try{
             $Categories = Categories::find($id);
             $Categories->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Categories);
+            //$this->images($request,$Categories);
             $data['data'] = $Categories;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

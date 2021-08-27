@@ -51,7 +51,7 @@ class CertificateController extends Controller
     {
         try{
             $Certificate = Certificate::create($request->except('_token'));
-            $this->images($request,$Certificate);
+            //$this->images($request,$Certificate);
             $data['data'] = $Certificate;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class CertificateController extends Controller
         try{
             $Certificate = Certificate::find($id);
             $Certificate->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Certificate);
+            //$this->images($request,$Certificate);
             $data['data'] = $Certificate;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

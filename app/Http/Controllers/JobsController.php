@@ -51,7 +51,7 @@ class JobsController extends Controller
     {
         try{
             $Jobs = Jobs::create($request->except('_token'));
-            $this->images($request,$Jobs);
+            //$this->images($request,$Jobs);
             $data['data'] = $Jobs;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class JobsController extends Controller
         try{
             $Jobs = Jobs::find($id);
             $Jobs->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Jobs);
+            //$this->images($request,$Jobs);
             $data['data'] = $Jobs;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

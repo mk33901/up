@@ -51,7 +51,7 @@ class LanguageController extends Controller
     {
         try{
             $Language = Language::create($request->except('_token'));
-            $this->images($request,$Language);
+            //$this->images($request,$Language);
             $data['data'] = $Language;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -95,7 +95,7 @@ class LanguageController extends Controller
         try{
             $Language = Language::find($id);
             $Language->update($request->except(['_token','id','created_at','updated_at']));
-            $this->images($request,$Language);
+            //$this->images($request,$Language);
             $data['data'] = $Language;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

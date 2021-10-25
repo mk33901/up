@@ -39,12 +39,12 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('category/{id}/update', 'CategoriesController@update');
     Route::post('category/{id}/remove', 'CategoriesController@destroy');
 
-    Route::get('certificate', 'CategoriesController@index');
-    Route::post('certificate', 'CategoriesController@store');
-    Route::post('certificate/search', 'CategoriesController@search');
-    Route::post('certificate/{id}', 'CategoriesController@show');
-    Route::post('certificate/{id}/update', 'CategoriesController@update');
-    Route::post('certificate/{id}/remove', 'CategoriesController@destroy');
+    Route::get('certificate', 'CertificateController@index');
+    Route::post('certificate', 'CertificateController@store');
+    Route::post('certificate/search', 'CertificateController@search');
+    Route::post('certificate/{id}', 'CertificateController@show');
+    Route::post('certificate/{id}/update', 'CertificateController@update');
+    Route::post('certificate/{id}/remove', 'CertificateController@destroy');
 
     Route::get('education', 'EducationController@index');
     Route::post('education', 'EducationController@store');

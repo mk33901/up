@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Traits\UuidTraits;
+use App\Models\JobPreference;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Jobs extends Model
 {
@@ -38,12 +39,22 @@ class Jobs extends Model
     }
 
     /**
-     * Get the user that owns the Jobs
+     * Get the preference that owns the Jobs
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the preference associated with the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function preference(): HasOne
+    {
+        return $this->hasOne(JobPreference::class);
     }
 }

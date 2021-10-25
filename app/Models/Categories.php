@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Jobs;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Categories extends Model
 {
@@ -14,5 +15,15 @@ class Categories extends Model
      * @var array
      */
     protected $fillable = ['name'];
+
+    /**
+     * Get all of the jobs for the Categories
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function jobs(): HasMany
+    {
+        return $this->hasMany(Jobs::class);
+    }
 
 }

@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Education;
+use App\Models\JobAttachment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class EducationFactory extends Factory
+class JobAttachmentFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Education::class;
+    protected $model = JobAttachment::class;
 
     /**
      * Define the model's default state.
@@ -22,8 +22,7 @@ class EducationFactory extends Factory
     public function definition()
     {
         return [
-            'uuid'=>$this->faker->uuid,
-            'name'=> $this->faker->name
+            //
         ];
     }
 }

@@ -22,7 +22,16 @@ class JobsFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'uuid'=>$this->faker->uuid,
+            'title'=> $this->faker->name,
+            'description'=>$this->faker->text,
+            'category_id'=>rand(1,10),
+            'speciality_id'=>rand(1,10),
+            'edit_scope'=>1,
+            'time'=>1,
+            'level_experience'=>1,
+            'user_id'=>rand(1,10),
+            'budget'=>rand(10,100)
         ];
     }
 }

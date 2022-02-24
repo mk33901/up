@@ -46,6 +46,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('certificate/{id}/update', 'CertificateController@update');
     Route::post('certificate/{id}/remove', 'CertificateController@destroy');
 
+    Route::get('ssecialization', 'SpecializationController@index');
+    Route::post('specialization', 'SpecializationController@store');
+    Route::post('specialization/search', 'SpecializationController@search');
+    Route::post('specialization/{id}', 'SpecializationController@show');
+    Route::post('specialization/{id}/update', 'SpecializationController@update');
+    Route::post('specialization/{id}/remove', 'SpecializationController@destroy');
+
     Route::get('education', 'EducationController@index');
     Route::post('education', 'EducationController@store');
     Route::post('education/search', 'EducationController@search');
@@ -77,6 +84,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     
     Route::get('jobs', 'JobsController@index');
     Route::post('jobs', 'JobsController@store');
+    Route::post('jobs/getData', 'JobsController@create');
     Route::post('jobs/search', 'JobsController@search');
     Route::post('jobs/{id}', 'JobsController@show');
     Route::post('jobs/{id}/update', 'JobsController@update');

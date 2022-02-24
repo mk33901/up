@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Jobs;
+use App\Models\Specialization;
 use Illuminate\Database\Seeder;
 
-class JobsSeeder extends Seeder
+class SpecializationSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class JobsSeeder extends Seeder
      */
     public function run()
     {
-        Jobs::factory(1000)->create();
+        Specialization::factory(10)->create();
     }
 }

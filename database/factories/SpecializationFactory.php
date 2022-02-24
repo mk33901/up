@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Skills;
+use App\Models\Specialization;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SkillsFactory extends Factory
+class SpecializationFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Skills::class;
+    protected $model = Specialization::class;
 
     /**
      * Define the model's default state.

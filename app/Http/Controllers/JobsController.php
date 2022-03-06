@@ -8,6 +8,7 @@ use App\Models\Specialization;
 use App\Models\Categories;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateJobRequest;
 
 class JobsController extends Controller
 {
@@ -63,7 +64,7 @@ class JobsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CreateJobRequest $request)
     {
         try{
             $Jobs = Jobs::create($request->except('_token'));
@@ -83,9 +84,17 @@ class JobsController extends Controller
      * @param  \App\Jobs  $Jobs
      * @return \Illuminate\Http\Response
      */
-    public function show(Jobs $Jobs)
+    public function show(Request $request,$id)
     {
-        //
+        try{
+            $Jobs = Jobs::find($id);
+            $data['data'] = $Jobs;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

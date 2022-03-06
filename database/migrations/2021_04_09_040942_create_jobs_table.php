@@ -24,6 +24,7 @@ class CreateJobsTable extends Migration
             $table->string('time')->nullable()->default(0);
             $table->string('level_experience')->nullable()->default(0);
             $table->bigInteger('user_id')->nullable()->default(0);
+            $table->bigInteger('client_id')->nullable()->default(0);
             $table->integer('budget')->nullable()->default(0);
             $table->softDeletes();
             $table->timestamps();

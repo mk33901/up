@@ -46,7 +46,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('certificate/{id}/update', 'CertificateController@update');
     Route::post('certificate/{id}/remove', 'CertificateController@destroy');
 
-    Route::get('ssecialization', 'SpecializationController@index');
+    Route::get('specialization', 'SpecializationController@index');
     Route::post('specialization', 'SpecializationController@store');
     Route::post('specialization/search', 'SpecializationController@search');
     Route::post('specialization/{id}', 'SpecializationController@show');

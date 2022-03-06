@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Categories;
 
 class Specialization extends Model
 {
@@ -13,5 +14,15 @@ class Specialization extends Model
      *
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = ['name','category_id'];
+
+    /**
+     * Get the categories that owns the Specialization
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function categories(): BelongsTo
+    {
+        return $this->belongsTo(Categories::class);
+    }
 }

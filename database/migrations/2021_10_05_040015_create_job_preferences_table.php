@@ -15,6 +15,7 @@ class CreateJobPreferencesTable extends Migration
     {
         Schema::create('job_preferences', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('job_id')->nullable()->default(12);
             $table->enum('english_level', ['any', 'better','fluent','native'])->nullable();
             $table->enum('hours_per_week', ['30plus', '30minus','0'])->nullable();
             $table->enum('hire_date', ['1-3', '1 week','2 weeks','1 month'])->nullable();

@@ -25,5 +25,14 @@ class Categories extends Model
     {
         return $this->hasMany(Jobs::class);
     }
+    /**
+     * Get all of the specialization for the Categories
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function specialization(): HasMany
+    {
+        return $this->hasMany(Specialization::class);
+    }
 
 }

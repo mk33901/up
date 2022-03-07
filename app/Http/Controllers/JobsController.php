@@ -9,6 +9,7 @@ use App\Models\Categories;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
+use Illuminate\Support\Facades\DB;
 
 class JobsController extends Controller
 {
@@ -24,9 +25,26 @@ class JobsController extends Controller
             if($request->per_page){
                 $per_page=$request->per_page;
             }
-            $Jobs = Jobs::paginate($per_page);
+            // $Jobs = Jobs::paginate($per_page);
 
-            $data['data'] = $Jobs;
+            $jobs = DB::select("SELECT
+            jobs.*,
+            categories.name,
+            specializations.name,
+            job_preferences.*,
+            clients.*
+        FROM
+            jobs
+        JOIN  job_preferences ON
+            job_preferences.job_id = jobs.id
+        JOIN  categories ON
+            categories.id = jobs.category_id
+        JOIN  specializations ON
+            specializations.id = jobs.speciality_id
+        join clients ON
+            clients.id=jobs.client_id
+            limit 1000");
+            $data['data'] = $jobs;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Jobs;
 use App\Models\Skills;
-use App\Models\Specialization;
 use App\Models\Categories;
+use App\Models\JobBookmark;
+use App\Models\JobFeedback;
 use Illuminate\Http\Request;
+use App\Models\Specialization;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
-use Illuminate\Support\Facades\DB;
 
 class JobsController extends Controller
 {
@@ -22,9 +24,11 @@ class JobsController extends Controller
     {
         try{
             $per_page = 8;
+            $page = (isset($_GET['page']) && $_GET['page'] > 0) ? intval($_GET['page']) : 1;
             if($request->per_page){
                 $per_page=$request->per_page;
             }
+            $offset = ($page > 1) ? ($per_page * ($page - 1)) : 0;
             // $Jobs = Jobs::paginate($per_page);
 
             $jobs = DB::select("SELECT
@@ -43,7 +47,7 @@ class JobsController extends Controller
             specializations.id = jobs.speciality_id
         join clients ON
             clients.id=jobs.client_id
-            limit 1000");
+            limit ".$limit." ".$offset);
             $data['data'] = $jobs;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
@@ -172,6 +176,40 @@ class JobsController extends Controller
             $Jobs =$Jobs->paginate(8);
             $data['data'] =  $Jobs;
             $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
+    public function bookmark(Request $request,$id)
+    {
+        try{
+            $newBookmark = New JobBookmark();
+            $newBookmark->user_id = auth()->user()->id;
+            $newBookmark->job_id = $id;
+            $newBookmark->save();
+            $data['data'] = [];
+            $data['message'] = 'done';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
+    public function feedback(Request $request,$id)
+    {
+        try{
+            $newBookmark = New JobFeedback();
+            $newBookmark->user_id = auth()->user()->id;
+            $newBookmark->job_id = $id;
+            $newBookmark->reason = $request->reason;
+            $newBookmark->feedback = $request->feedback;
+            $newBookmark->save();
+            $data['data'] = [];
+            $data['message'] = 'done';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
             $data['message'] = $e->getMessage();

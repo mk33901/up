@@ -18,7 +18,8 @@ class CreateProposalsTable extends Migration
             $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('job_id')->nullable()->default(0);
             $table->bigInteger('user_id')->nullable()->default(0);
-            $table->integer('rate')->unsigned()->nullable()->default(0);
+            $table->float('rate')->unsigned()->nullable()->default(0);
+            $table->enum('duration', ['6+', '3-6','1-3','1'])->nullable();
             $table->text('description')->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
 Route::group([ 'prefix' => 'auth'], function (){
     Route::group(['middleware' => ['guest:api']], function () {
         Route::post('login', 'Api\AuthController@login');
@@ -81,6 +82,20 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('favourite/{id}/update', 'FavouriteController@update');
     Route::post('favourite/{id}/remove', 'FavouriteController@destroy');
 
+    Route::get('preference', 'UserPreferenceController@index');
+    Route::post('preference', 'UserPreferenceController@store');
+    Route::post('preference/search', 'UserPreferenceController@search');
+    Route::post('preference/{id}', 'UserPreferenceController@show');
+    Route::post('preference/{id}/update', 'UserPreferenceController@update');
+    Route::post('preference/{id}/remove', 'UserPreferenceController@destroy');
+
+    Route::get('proposal', 'ProposalsController@index');
+    Route::post('proposal', 'ProposalsController@store');
+    Route::post('proposal/search', 'ProposalsController@search');
+    Route::post('proposal/{id}', 'ProposalsController@show');
+    Route::post('proposal/{id}/update', 'ProposalsController@update');
+    Route::post('proposal/{id}/remove', 'ProposalsController@destroy');
+
     
     Route::get('jobs', 'JobsController@index');
     Route::post('jobs', 'JobsController@store');
@@ -89,6 +104,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('jobs/{id}', 'JobsController@show');
     Route::post('jobs/{id}/update', 'JobsController@update');
     Route::post('jobs/{id}/remove', 'JobsController@destroy');
+    Route::post('jobs/{id}/bookmark', 'JobsController@bookmark');
+    Route::post('jobs/{id}/feedback', 'JobsController@feedback');
 
     Route::get('language', 'LanguageController@index');
     Route::post('language', 'LanguageController@store');
@@ -134,5 +151,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('transations/{id}/update', 'TransationsController@update');
     Route::post('transations/{id}/remove', 'TransationsController@destroy');
             
+
+    Route::post('user/{id}', 'UserController@show');
 });
 

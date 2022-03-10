@@ -17,6 +17,7 @@ class CreateJobFeedbackTable extends Migration
             $table->id();
             $table->bigInteger('job_id')->nullable();
             $table->bigInteger('user_id')->nullable();
+            $table->string('reason')->nullable();
             $table->text('feedback')->nullable();
             $table->softDeletes();
             $table->timestamps();

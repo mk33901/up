@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use App\Models\UserLanguage;
+use App\Models\UserEducation;
 
 class User extends Authenticatable
 {
@@ -84,5 +86,54 @@ class User extends Authenticatable
     public function bookmark(): HasMany
     {
         return $this->hasMany(JobBookmark::class);
+    }
+
+    /**
+     * Get all of the language for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function language(): HasMany
+    {
+        return $this->hasMany(UserLanguage::class);
+    }
+
+    /**
+     * Get all of the education for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function education(): HasMany
+    {
+        return $this->hasMany(UserEducation::class);
+    }
+
+    /**
+     * Get all of the testimonial for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function testimonial(): HasMany
+    {
+        return $this->hasMany(Testimonial::class);
+    }
+    /**
+     * Get all of the employement for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function employement(): HasMany
+    {
+        return $this->hasMany(Employement::class);
+    }
+
+    /**
+     * Get all of the expirence for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function expirence(): HasMany
+    {
+        return $this->hasMany(Expirence::class);
     }
 }

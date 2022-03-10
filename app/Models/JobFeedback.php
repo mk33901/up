@@ -14,7 +14,7 @@ class JobFeedback extends Model
      *
      * @var array
      */
-    protected $fillable = ['job_id', 'user_id', 'feedback'];
+    protected $fillable = ['job_id', 'user_id', 'feedback','reason'];
 
     /**
      * Get the job that owns the JobFeedback

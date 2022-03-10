@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UserPreference;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class UserPreferenceController extends Controller
+class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,10 +35,20 @@ class UserPreferenceController extends Controller
      */
     public function store(Request $request)
     {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, $id)
+    {
         try{
-            $UserPreference = UserPreference::create($request->except('_token'));
-            //$this->images($request,$UserPreference);
-            $data['data'] = $UserPreference;
+            $user = User::with('preference','language','education','testimonial','employement','expirence')->find($id);
+            $data['data']['user'] = $user;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -48,23 +58,12 @@ class UserPreferenceController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\UserPreference  $userPreference
-     * @return \Illuminate\Http\Response
-     */
-    public function show(UserPreference $userPreference)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\UserPreference  $userPreference
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function edit(UserPreference $userPreference)
+    public function edit(User $user)
     {
         //
     }
@@ -73,10 +72,10 @@ class UserPreferenceController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\UserPreference  $userPreference
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserPreference $userPreference)
+    public function update(Request $request, User $user)
     {
         //
     }
@@ -84,10 +83,10 @@ class UserPreferenceController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\UserPreference  $userPreference
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UserPreference $userPreference)
+    public function destroy(User $user)
     {
         //
     }

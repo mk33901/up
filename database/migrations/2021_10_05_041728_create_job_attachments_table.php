@@ -15,6 +15,7 @@ class CreateJobAttachmentsTable extends Migration
     {
         Schema::create('job_attachments', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('job_id')->nullable()->default(12);
             $table->string('name', 100)->nullable();
             $table->string('path',255)->nullable();

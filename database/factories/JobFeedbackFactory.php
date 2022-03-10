@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\JobQuestions;
+use App\Models\JobFeedback;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class JobQuestionsFactory extends Factory
+class JobFeedbackFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = JobQuestions::class;
+    protected $model = JobFeedback::class;
 
     /**
      * Define the model's default state.
@@ -22,9 +22,7 @@ class JobQuestionsFactory extends Factory
     public function definition()
     {
         return [
-            // 'uuid'=>$this->faker->uuid,
-            'questions'=> $this->faker->text,
-            'job_id'=>rand(1,1000),
+            //
         ];
     }
 }

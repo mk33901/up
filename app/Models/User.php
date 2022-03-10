@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Models\JobBookmark;
+use App\Models\UserPreference;
+use Laravel\Passport\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -50,5 +54,35 @@ class User extends Authenticatable
     public function jobs(): HasMany
     {
         return $this->hasMany(Jobs::class);
+    }
+
+    /**
+     * Get the client associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function client(): HasOne
+    {
+        return $this->hasOne(Client::class);
+    }
+
+    /**
+     * Get the preference associated with the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function preference(): HasOne
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
+    /**
+     * Get all of the bookmark for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bookmark(): HasMany
+    {
+        return $this->hasMany(JobBookmark::class);
     }
 }

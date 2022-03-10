@@ -30,9 +30,9 @@ class Categories extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function specialization(): HasMany
+    public function specialization()
     {
-        return $this->hasMany(Specialization::class);
+        return $this->hasMany(Specialization::class,"category_id");
     }
 
 }

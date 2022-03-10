@@ -15,6 +15,7 @@ class CreateProposalsTable extends Migration
     {
         Schema::create('proposals', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('job_id')->nullable()->default(0);
             $table->bigInteger('user_id')->nullable()->default(0);
             $table->integer('rate')->unsigned()->nullable()->default(0);

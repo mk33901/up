@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Models\Jobs;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class JobPreference extends Model
+class JobFeedback extends Model
 {
     use HasFactory;
 
@@ -16,9 +14,10 @@ class JobPreference extends Model
      *
      * @var array
      */
-    protected $fillable = [ 'job_id', 'english_level', 'hours_per_week', 'hire_date', 'no_of_professionals', 'type_of_talent', 'location'];
+    protected $fillable = ['job_id', 'user_id', 'feedback'];
+
     /**
-     * Get the job that owns the JobPreference
+     * Get the job that owns the JobFeedback
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */

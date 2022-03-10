@@ -5,9 +5,14 @@ namespace App\Models;
 use App\Models\Client;
 use App\Models\Asssets;
 use App\Traits\UuidTraits;
+use App\Models\JobBookmark;
+use App\Models\JobFeedback;
 use App\Models\JobQuestions;
 use App\Models\JobPreference;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Jobs extends Model
@@ -19,7 +24,7 @@ class Jobs extends Model
      *
      * @var array
      */
-    protected $fillable = ['title','description','category_id','speciality_id','edit_scope','time','level_experience','budget'];
+    protected $fillable = ['title','description','category_id','speciality_id','edit_scope','time','level_experience','budget','client_id'];
 
     /**
      * Get the category that owns the Jobs
@@ -58,7 +63,7 @@ class Jobs extends Model
      */
     public function preference(): HasOne
     {
-        return $this->hasOne(JobPreference::class);
+        return $this->hasOne(JobPreference::class,"job_id","id");
     }
 
     /**
@@ -88,6 +93,26 @@ class Jobs extends Model
      */
     public function questions(): HasMany
     {
-        return $this->hasMany(JobQuestions::class);
+        return $this->hasMany(JobQuestions::class,"job_id","id");
+    }
+
+    /**
+     * Get all of the feedback for the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function feedback(): HasMany
+    {
+        return $this->hasMany(JobFeedback::class);
+    }
+    
+    /**
+     * Get all of the bookmark for the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function bookmark(): HasMany
+    {
+        return $this->hasMany(JobBookmark::class);
     }
 }

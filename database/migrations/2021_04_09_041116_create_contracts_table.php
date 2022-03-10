@@ -15,6 +15,7 @@ class CreateContractsTable extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('proposal_id')->nullable()->default(0);
             $table->bigInteger('user_id')->nullable()->default(0);
             $table->bigInteger('client_id')->nullable()->default(0);

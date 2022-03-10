@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJobQuestionsTable extends Migration
+class CreateJobFeedbackTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateJobQuestionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('job_questions', function (Blueprint $table) {
+        Schema::create('job_feedback', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->nullable()->default(null);
-            $table->string('questions', 200)->nullable()->default('text');
-            $table->bigInteger('job_id')->nullable()->default(12);
+            $table->bigInteger('job_id')->nullable();
+            $table->bigInteger('user_id')->nullable();
+            $table->text('feedback')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +30,6 @@ class CreateJobQuestionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('job_questions');
+        Schema::dropIfExists('job_feedback');
     }
 }

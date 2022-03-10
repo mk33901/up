@@ -15,6 +15,7 @@ class CreateSpecializationsTable extends Migration
     {
         Schema::create('specializations', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('category_id')->nullable()->default(12);
             $table->string('name', 100)->nullable();
             $table->softDeletes();

@@ -29,8 +29,8 @@ class JobsController extends Controller
 
             $jobs = DB::select("SELECT
             jobs.*,
-            categories.name,
-            specializations.name,
+            categories.name as categories,
+            specializations.name as specializations,
             job_preferences.*,
             clients.*
         FROM
@@ -61,7 +61,9 @@ class JobsController extends Controller
     public function create()
     {
         try{
-            $categories = Categories::get();
+            $categories = Categories::with(['specialization' => function ($query) {
+                $query->select('name','category_id','id');
+            }])->get();
             $specialization = Specialization::get();
             $skills = Skills::get();
             //$this->images($request,$Jobs);

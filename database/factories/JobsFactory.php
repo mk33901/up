@@ -30,7 +30,7 @@ class JobsFactory extends Factory
             'edit_scope'=>1,
             'time'=>1,
             'level_experience'=>1,
-            'user_id'=>rand(1,10),
+            'user_id'=>rand(1,100),
             'budget'=>rand(10,100)
         ];
     }

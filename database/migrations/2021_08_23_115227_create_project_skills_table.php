@@ -15,6 +15,7 @@ class CreateProjectSkillsTable extends Migration
     {
         Schema::create('project_skills', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('project_id')->unsigned()->nullable()->default(0);
             $table->integer('skill_id')->unsigned()->nullable()->default(0);
             $table->timestamps();

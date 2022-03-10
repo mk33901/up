@@ -15,6 +15,7 @@ class CreateAsssetsTable extends Migration
     {
         Schema::create('asssets', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->nullable()->default(null);
             $table->morphs('taggable');
             $table->string('name', 100)->nullable()->default('text');
             $table->string('path', 100)->nullable()->default('text');

@@ -22,7 +22,20 @@ class ClientFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' =>$this->faker->name,
+            'description'=>$this->faker->text,
+            'company_name'=>$this->faker->name,
+            'company_website'=>$this->faker->url,
+            'company_tag_line'=>$this->faker->name,
+            'company_description'=>$this->faker->text,
+            'company_owner'=>$this->faker->name,
+            'company_phone'=>"123456",
+            'company_vat'=>null,
+            'company_timezone'=>null,
+            'company_country'=>$this->faker->country,
+            'company_address'=>$this->faker->address,
+            'company_city'=>$this->faker->city,
+            'company_zip'=>$this->faker->postcode,
         ];
     }
 }

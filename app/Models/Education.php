@@ -15,6 +15,6 @@ class Education extends Model
      *
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = ['uuid','name'];
 
 }

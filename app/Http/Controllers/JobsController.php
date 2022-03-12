@@ -47,7 +47,7 @@ class JobsController extends Controller
             specializations.id = jobs.speciality_id
         join clients ON
             clients.id=jobs.client_id
-            limit ".$limit." ".$offset);
+            limit ".$offset.", ".$per_page);
             $data['data'] = $jobs;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);

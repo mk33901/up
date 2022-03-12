@@ -75,6 +75,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('expirence/{id}/update', 'ExpirenceController@update');
     Route::post('expirence/{id}/remove', 'ExpirenceController@destroy');
 
+    Route::get('education', 'UserEducationController@index');
+    Route::post('education', 'UserEducationController@store');
+    Route::post('education/search', 'UserEducationController@search');
+    Route::post('education/{id}', 'UserEducationController@show');
+    Route::post('education/{id}/update', 'UserEducationController@update');
+    Route::post('education/{id}/remove', 'UserEducationController@destroy');
+
     Route::get('favourite', 'FavouriteController@index');
     Route::post('favourite', 'FavouriteController@store');
     Route::post('favourite/search', 'FavouriteController@search');

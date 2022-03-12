@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Certificate;
+use App\Models\Education;
+use App\Models\Language;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -47,8 +50,13 @@ class UserController extends Controller
     public function show(Request $request, $id)
     {
         try{
+            $language = Language::all();
+            $education = Education::all();
+            $certificate = Certificate::all();
             $user = User::with('preference','language','education','testimonial','employement','expirence')->find($id);
             $data['data']['user'] = $user;
+            $data['data']['education'] = $education;
+            $data['data']['certificate'] = $certificate;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

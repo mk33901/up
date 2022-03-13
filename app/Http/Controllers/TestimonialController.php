@@ -50,7 +50,9 @@ class TestimonialController extends Controller
     public function store(Request $request)
     {
         try{
-            $Testimonial = Testimonial::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $Testimonial = Testimonial::create($data);
             //$this->images($request,$Testimonial);
             $data['data'] = $Testimonial;
             $data['message'] = 'created';
@@ -93,8 +95,10 @@ class TestimonialController extends Controller
     public function update(Request $request,$id)
     {
         try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
             $Testimonial = Testimonial::find($id);
-            $Testimonial->update($request->except(['_token','id','created_at','updated_at']));
+            $Testimonial->update($data);
             //$this->images($request,$Testimonial);
             $data['data'] = $Testimonial;
             $data['message'] = 'update';

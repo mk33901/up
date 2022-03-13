@@ -50,7 +50,9 @@ class ExpirenceController extends Controller
     public function store(Request $request)
     {
         try{
-            $Expirence = Expirence::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $Expirence = Expirence::create($data);
             //$this->images($request,$Expirence);
             $data['data'] = $Expirence;
             $data['message'] = 'created';
@@ -93,8 +95,10 @@ class ExpirenceController extends Controller
     public function update(Request $request,$id)
     {
         try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
             $Expirence = Expirence::find($id);
-            $Expirence->update($request->except(['_token','id','created_at','updated_at']));
+            $Expirence->update($data);
             //$this->images($request,$Expirence);
             $data['data'] = $Expirence;
             $data['message'] = 'update';

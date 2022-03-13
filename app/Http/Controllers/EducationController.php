@@ -50,7 +50,9 @@ class EducationController extends Controller
     public function store(Request $request)
     {
         try{
-            $Education = Education::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $Education = Education::create($data);
             //$this->images($request,$Education);
             $data['data'] = $Education;
             $data['message'] = 'created';
@@ -93,8 +95,10 @@ class EducationController extends Controller
     public function update(Request $request,$id)
     {
         try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
             $Education = Education::find($id);
-            $Education->update($request->except(['_token','id','created_at','updated_at']));
+            $Education->update($data);
             //$this->images($request,$Education);
             $data['data'] = $Education;
             $data['message'] = 'update';

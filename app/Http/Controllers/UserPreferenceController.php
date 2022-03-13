@@ -36,7 +36,9 @@ class UserPreferenceController extends Controller
     public function store(Request $request)
     {
         try{
-            $UserPreference = UserPreference::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $UserPreference = UserPreference::create($data);
             //$this->images($request,$UserPreference);
             $data['data'] = $UserPreference;
             $data['message'] = 'created';
@@ -76,9 +78,21 @@ class UserPreferenceController extends Controller
      * @param  \App\Models\UserPreference  $userPreference
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserPreference $userPreference)
+    public function update(Request $request, $id)
     {
-        //
+        try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
+            $UserPreference = UserPreference::find($id);
+            $UserPreference->update($data);
+            //$this->images($request,$UserPreference);
+            $data['data'] = $UserPreference;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

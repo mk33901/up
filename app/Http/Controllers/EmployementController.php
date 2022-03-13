@@ -50,7 +50,9 @@ class EmployementController extends Controller
     public function store(Request $request)
     {
         try{
-            $Employement = Employement::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $Employement = Employement::create($data);
             //$this->images($request,$Employement);
             $data['data'] = $Employement;
             $data['message'] = 'created';
@@ -93,8 +95,10 @@ class EmployementController extends Controller
     public function update(Request $request,$id)
     {
         try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
             $Employement = Employement::find($id);
-            $Employement->update($request->except(['_token','id','created_at','updated_at']));
+            $Employement->update($data);
             //$this->images($request,$Employement);
             $data['data'] = $Employement;
             $data['message'] = 'update';

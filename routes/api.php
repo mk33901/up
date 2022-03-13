@@ -54,12 +54,12 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('specialization/{id}/update', 'SpecializationController@update');
     Route::post('specialization/{id}/remove', 'SpecializationController@destroy');
 
-    Route::get('education', 'EducationController@index');
-    Route::post('education', 'EducationController@store');
-    Route::post('education/search', 'EducationController@search');
-    Route::post('education/{id}', 'EducationController@show');
-    Route::post('education/{id}/update', 'EducationController@update');
-    Route::post('education/{id}/remove', 'EducationController@destroy');
+    // Route::get('education', 'EducationController@index');
+    // Route::post('education', 'EducationController@store');
+    // Route::post('education/search', 'EducationController@search');
+    // Route::post('education/{id}', 'EducationController@show');
+    // Route::post('education/{id}/update', 'EducationController@update');
+    // Route::post('education/{id}/remove', 'EducationController@destroy');
 
     Route::get('employement', 'EmployementController@index');
     Route::post('employement', 'EmployementController@store');

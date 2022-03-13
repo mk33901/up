@@ -111,7 +111,22 @@ class JobsController extends Controller
     public function show(Request $request,$id)
     {
         try{
-            $Jobs = Jobs::find($id);
+            $jobs = DB::select("SELECT
+            jobs.*,
+            categories.name as categories,
+            specializations.name as specializations,
+            job_preferences.*,
+            clients.*
+        FROM
+            jobs
+        JOIN  job_preferences ON
+            job_preferences.job_id = jobs.id
+        JOIN  categories ON
+            categories.id = jobs.category_id
+        JOIN  specializations ON
+            specializations.id = jobs.speciality_id
+        join clients ON
+            clients.id=jobs.client_id where jobs.id='".$id."'");
             $data['data'] = $Jobs;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);

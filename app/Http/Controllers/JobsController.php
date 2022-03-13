@@ -111,7 +111,7 @@ class JobsController extends Controller
     public function show(Request $request,$id)
     {
         try{
-            $jobs = DB::select("SELECT
+            $Jobs = DB::select("SELECT
             jobs.*,
             categories.name as categories,
             specializations.name as specializations,

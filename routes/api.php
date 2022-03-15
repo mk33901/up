@@ -157,7 +157,21 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('transations/{id}', 'TransationsController@show');
     Route::post('transations/{id}/update', 'TransationsController@update');
     Route::post('transations/{id}/remove', 'TransationsController@destroy');
-            
+
+
+    Route::get('timeentry', 'TimeEntryController@index');
+    Route::post('timeentry', 'TimeEntryController@store');
+    Route::post('timeentry/search', 'TimeEntryController@search');
+    Route::post('timeentry/{id}', 'TimeEntryController@show');
+    Route::post('timeentry/{id}/update', 'TimeEntryController@update');
+    Route::post('timeentry/{id}/remove', 'TimeEntryController@destroy');
+
+    Route::get('timeentry/attachment', 'TimeEntryAttachmentController@index');
+    Route::post('timeentry/attachment', 'TimeEntryAttachmentController@store');
+    Route::post('timeentry/attachment/search', 'TimeEntryAttachmentController@search');
+    Route::post('timeentry/attachment/{id}', 'TimeEntryAttachmentController@show');
+    Route::post('timeentry/attachment/{id}/update', 'TimeEntryAttachmentController@update');
+    Route::post('timeentry/attachment/{id}/remove', 'TimeEntryAttachmentController@destroy');
 
     Route::post('user/{id}', 'UserController@show');
 });

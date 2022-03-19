@@ -17,7 +17,20 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        try{
+            $language = Language::all();
+            $education = Education::all();
+            $certificate = Certificate::all();
+            $user = User::with('preference','language','education','testimonial','employement','expirence')->paginate(8);
+            $data['data']['user'] = $user;
+            $data['data']['education'] = $education;
+            $data['data']['certificate'] = $certificate;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

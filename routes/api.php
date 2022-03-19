@@ -177,6 +177,6 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('invite/{id}', 'InvitesController@store');
     Route::post('contract/{id}', 'ContractsController@store');
     Route::post('getjobs/{id}', 'JobsController@store');
-    Route::post('users/all', 'UserController@index');
+    Route::get('users/all', 'UserController@index');
 });
 

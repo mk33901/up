@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Language;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\UserLanguage;
 
 class LanguageController extends Controller
 {
@@ -50,7 +51,7 @@ class LanguageController extends Controller
     public function store(Request $request)
     {
         try{
-            $Language = Language::create($request->except('_token'));
+            $Language = UserLanguage::create($request->except('_token'));
             //$this->images($request,$Language);
             $data['data'] = $Language;
             $data['message'] = 'created';
@@ -93,7 +94,7 @@ class LanguageController extends Controller
     public function update(Request $request,$id)
     {
         try{
-            $Language = Language::find($id);
+            $Language = UserLanguage::find($id);
             $Language->update($request->except(['_token','id','created_at','updated_at']));
             //$this->images($request,$Language);
             $data['data'] = $Language;

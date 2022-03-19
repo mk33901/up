@@ -70,6 +70,7 @@ class UserController extends Controller
             $data['data']['user'] = $user;
             $data['data']['education'] = $education;
             $data['data']['certificate'] = $certificate;
+            $data['data']['language'] = $language;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

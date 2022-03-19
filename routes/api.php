@@ -174,5 +174,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('timeentry/attachment/{id}/remove', 'TimeEntryAttachmentController@destroy');
 
     Route::post('user/{id}', 'UserController@show');
+    Route::post('invite/{id}', 'InvitesController@store');
+    Route::post('contract/{id}', 'ContractsController@store');
+    Route::post('getjobs/{id}', 'JobsController@store');
 });
 

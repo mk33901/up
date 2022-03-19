@@ -14,5 +14,5 @@ class Proposals extends Model
      *
      * @var array
      */
-    protected $fillable = ['job_id','user_id','rate','uuid','description'];
+    protected $fillable = ['job_id','user_id','rate','uuid','description','messaged','shortlisted','hired'];
 }

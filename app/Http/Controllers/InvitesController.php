@@ -35,7 +35,18 @@ class InvitesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $data = $request->except(['_token']);
+            $data['user_id'] = auth()->user()->id;
+            $Invites = Invites::create($data);
+            //$this->images($request,$Invites);
+            $data['data'] = $Invites;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

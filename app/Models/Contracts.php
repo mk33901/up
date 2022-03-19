@@ -12,6 +12,12 @@ class Contracts extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['uuid','proposal_id','user_id','client_id','start_date','payment_option','price','weekly_limit','allow_time_entry','automatic_amount','job_titile','description','last_payment'];
+    /**
      * Get the proposal associated with the Contracts
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne

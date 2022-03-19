@@ -50,7 +50,9 @@ class ProposalsController extends Controller
     public function store(Request $request)
     {
         try{
-            $Proposals = Proposals::create($request->except('_token'));
+            $data = $request->except(['_token']);
+            $data['user_id'] = auth()->user()->id;
+            $Proposals = Proposals::create($data);
             //$this->images($request,$Proposals);
             $data['data'] = $Proposals;
             $data['message'] = 'created';
@@ -93,8 +95,10 @@ class ProposalsController extends Controller
     public function update(Request $request,$id)
     {
         try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
             $Proposals = Proposals::find($id);
-            $Proposals->update($request->except(['_token','id','created_at','updated_at']));
+            $Proposals->update($request->except($data));
             //$this->images($request,$Proposals);
             $data['data'] = $Proposals;
             $data['message'] = 'update';

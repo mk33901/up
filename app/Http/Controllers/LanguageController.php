@@ -51,7 +51,9 @@ class LanguageController extends Controller
     public function store(Request $request)
     {
         try{
-            $Language = UserLanguage::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $Language = UserLanguage::create($data);
             //$this->images($request,$Language);
             $data['data'] = $Language;
             $data['message'] = 'created';
@@ -94,8 +96,10 @@ class LanguageController extends Controller
     public function update(Request $request,$id)
     {
         try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
             $Language = UserLanguage::find($id);
-            $Language->update($request->except(['_token','id','created_at','updated_at']));
+            $Language->update($data);
             //$this->images($request,$Language);
             $data['data'] = $Language;
             $data['message'] = 'update';

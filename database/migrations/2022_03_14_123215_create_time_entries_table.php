@@ -18,8 +18,8 @@ class CreateTimeEntriesTable extends Migration
             $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('user_id')->nullable()->default(12);
             $table->bigInteger('job_id')->nullable()->default(12);
-            $table->time('start_time')->nullable()->default(new DateTime());
-            $table->time('end_time')->nullable()->default(new DateTime());
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->string('duration', 100)->nullable();
             $table->softDeletes();
             $table->timestamps();

@@ -16,7 +16,7 @@ class UserLanguage extends Model
      *
      * @var array
      */
-    protected $fillable = ['uuid', 'user_id', 'language_id'];
+    protected $fillable = ['uuid', 'user_id', 'language_id','level'];
 
     /**
      * Get the user that owns the UserLanguage

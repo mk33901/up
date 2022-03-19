@@ -18,7 +18,7 @@ class CreateTimeEntryAttachmentsTable extends Migration
             $table->uuid('uuid')->nullable()->default(null);
             $table->bigInteger('time_entry_id')->nullable()->default(12);
             $table->string('name')->nullable();
-            $table->time('time')->nullable()->default(new DateTime());
+            $table->time('time')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

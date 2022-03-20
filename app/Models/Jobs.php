@@ -115,4 +115,14 @@ class Jobs extends Model
     {
         return $this->hasMany(JobBookmark::class);
     }
+
+    /**
+     * Get all of the invites for the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function invites(): HasMany
+    {
+        return $this->hasMany(Invites::class);
+    }
 }

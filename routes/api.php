@@ -178,5 +178,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('contract/{id}', 'ContractsController@store');
     Route::post('getjobs/{id}', 'JobsController@store');
     Route::get('users/all', 'UserController@index');
+
+    Route::post('bookmark', 'JobBookmarkController@store');
+
+    Route::get('feedback', 'JobFeedbackController@index');
+    Route::post('feedback', 'JobFeedbackController@store');
+    Route::post('feedback/search', 'JobFeedbackController@search');
+    Route::post('feedback/{id}', 'JobFeedbackController@show');
+    Route::post('feedback/{id}/update', 'JobFeedbackController@update');
+    Route::post('feedback/{id}/remove', 'JobFeedbackController@destroy');
 });
 

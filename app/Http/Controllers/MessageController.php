@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class MessageController extends Controller
 {
@@ -15,19 +16,26 @@ class MessageController extends Controller
      */
     public function index(Request $request)
     {
-        try{
-            $per_page = 8;
-            if($request->per_page){
-                $per_page=$request->per_page;
-            }
-            $Message = Message::paginate($per_page);
-
-            $data['data'] = $Message;
-            $data['message'] = 'block';
-            return  $this->apiResponse($data,200);
-        }catch(\Exception $e){
-            $data['message'] = $e->getMessage();
-            return  $this->apiResponse($data,404);
+        try {
+            $id = auth()->user()->id;
+            $message = DB::select("SELECT users.id,users.name,m.content
+FROM messages m join users on users.id=m.from_id
+WHERE m.to_id = " . $id . " AND
+      m.id = (SELECT MAX(m2.id)
+                      FROM messages m2
+                      WHERE m2.to_id = m.to_id AND
+                            m2.from_id = m.from_id 
+                     )  
+ORDER BY `m`.`to_id`  DESC
+");
+            $success['data'] = $message;
+            $success['success'] = true;
+            $success['message'] = "Post Created";
+            return $this->sendResponse($success);
+        } catch (\Exception $e) {
+            $success['success'] = false;
+            $success['error'] = $e->getMessage();
+            return $this->sendResponse($success, 401);
         }
     }
 
@@ -49,15 +57,15 @@ class MessageController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $Message = Message::create($request->except('_token'));
             //$this->images($request,$Message);
             $data['data'] = $Message;
             $data['message'] = 'created';
-            return  $this->apiResponse($data,200);
-        }catch(\Exception $e){
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
-            return  $this->apiResponse($data,404);
+            return  $this->apiResponse($data, 404);
         }
     }
 
@@ -90,18 +98,18 @@ class MessageController extends Controller
      * @param  \App\Message  $Message
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
-        try{
+        try {
             $Message = Message::find($id);
-            $Message->update($request->except(['_token','id','created_at','updated_at']));
+            $Message->update($request->except(['_token', 'id', 'created_at', 'updated_at']));
             //$this->images($request,$Message);
             $data['data'] = $Message;
             $data['message'] = 'update';
-            return  $this->apiResponse($data,200);
-        }catch(\Exception $e){
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
-            return  $this->apiResponse($data,404);
+            return  $this->apiResponse($data, 404);
         }
     }
 
@@ -118,19 +126,19 @@ class MessageController extends Controller
 
     public function search(Request $request)
     {
-        try{
+        try {
             $all = $request->all();
             $Message = new Message();
-            foreach($all as $k=>$a){
-                $Message = $Message->where($k,'like','%'.$a. '%');
+            foreach ($all as $k => $a) {
+                $Message = $Message->where($k, 'like', '%' . $a . '%');
             }
-            $Message =$Message->paginate(8);
+            $Message = $Message->paginate(8);
             $data['data'] =  $Message;
             $data['message'] = 'block';
-            return  $this->apiResponse($data,200);
-        }catch(\Exception $e){
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
-            return  $this->apiResponse($data,404);
+            return  $this->apiResponse($data, 404);
         }
     }
 }

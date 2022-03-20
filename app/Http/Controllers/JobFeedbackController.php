@@ -35,7 +35,18 @@ class JobFeedbackController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $JobFeedback = JobFeedback::create($data);
+            //$this->images($request,$JobFeedback);
+            $data['data'] = $JobFeedback;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -67,9 +78,21 @@ class JobFeedbackController extends Controller
      * @param  \App\Models\JobFeedback  $jobFeedback
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, JobFeedback $jobFeedback)
+    public function update(Request $request,$id)
     {
-        //
+        try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
+            $JobFeedback = JobFeedback::find($id);
+            $JobFeedback->update($data);
+            //$this->images($request,$JobFeedback);
+            $data['data'] = $JobFeedback;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

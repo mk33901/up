@@ -12,6 +12,7 @@ use App\Models\Specialization;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
+use App\Models\JobQuestions;
 
 class JobsController extends Controller
 {
@@ -69,11 +70,13 @@ class JobsController extends Controller
                 $query->select('name','category_id','id');
             }])->get();
             $specialization = Specialization::get();
+            $jobQuestions = JobQuestions::where('is_default',1)->where('job_id',0)->get();
             $skills = Skills::get();
             //$this->images($request,$Jobs);
             $data['data']['skills'] = $skills;
             $data['data']['categories'] = $categories;
             $data['data']['specialization'] = $specialization;
+            $data['data']['job_questions'] = $jobQuestions;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

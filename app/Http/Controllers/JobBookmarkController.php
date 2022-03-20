@@ -35,7 +35,18 @@ class JobBookmarkController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $JobBookmark = JobBookmark::create($data);
+            //$this->images($request,$JobBookmark);
+            $data['data'] = $JobBookmark;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

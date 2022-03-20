@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -77,9 +78,22 @@ ORDER BY `m`.`to_id`  DESC
      * @param  \App\Message  $Message
      * @return \Illuminate\Http\Response
      */
-    public function show(Message $Message)
+    public function show(Request $request, $id)
     {
-        //
+        try {
+            $auth_id= auth()->user()->id;
+            $user = User::find($id);
+            $message = DB::select("SELECT *  FROM `messages` WHERE (`from_id` = ".$id." and to_id=".$auth_id.") or (from_id=".$auth_id." and to_id=".$id.")");
+           
+            //$this->images($request,$Message);
+            $data['data']['message'] = $message;
+            $data['data']['user'] = $user;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
     }
 
     /**

@@ -31,7 +31,7 @@ ORDER BY `m`.`to_id`  DESC
             $success['data'] = $message;
             $success['success'] = true;
             $success['message'] = "Post Created";
-            return $this->apiResponse($success);
+            return $this->apiResponse($success,200);
         } catch (\Exception $e) {
             $success['success'] = false;
             $success['error'] = $e->getMessage();

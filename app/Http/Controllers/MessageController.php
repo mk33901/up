@@ -58,7 +58,9 @@ ORDER BY `m`.`to_id`  DESC
     public function store(Request $request)
     {
         try {
-            $Message = Message::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['from_id'] = auth()->user()->id;
+            $Message = Message::create($data);
             //$this->images($request,$Message);
             $data['data'] = $Message;
             $data['message'] = 'created';

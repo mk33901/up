@@ -31,11 +31,11 @@ ORDER BY `m`.`to_id`  DESC
             $success['data'] = $message;
             $success['success'] = true;
             $success['message'] = "Post Created";
-            return $this->sendResponse($success);
+            return $this->apiResponse($success);
         } catch (\Exception $e) {
             $success['success'] = false;
             $success['error'] = $e->getMessage();
-            return $this->sendResponse($success, 401);
+            return $this->apiResponse($success, 401);
         }
     }
 

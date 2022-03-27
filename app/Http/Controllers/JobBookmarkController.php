@@ -36,11 +36,18 @@ class JobBookmarkController extends Controller
     public function store(Request $request)
     {
         try{
+            $userId=   auth()->user()->id;
+            $isExist = JobBookmark::where('job_id',$request->job_id)->where('user_id',$userId)->first();
             $data = $request->except('_token');
-            $data['user_id'] = auth()->user()->id;
-            $JobBookmark = JobBookmark::create($data);
+            $data['user_id'] =$userId;
+            if(!$isExist){
+                $JobBookmark = JobBookmark::create($data);
+            }else{
+                $isExist->remove();
+            }
+            
             //$this->images($request,$JobBookmark);
-            $data['data'] = $JobBookmark;
+            $data['data'] = "done";
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

@@ -97,9 +97,10 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$id)
+    public function update(Request $request)
     {
         try{
+            $id = auth::user()->id;
             $user = User::find($id);
             $user->update($request->except(['_token','id','created_at','updated_at']));
             //$this->images($request,$user);

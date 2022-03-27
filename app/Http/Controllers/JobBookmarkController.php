@@ -45,7 +45,7 @@ class JobBookmarkController extends Controller
                 $JobBookmark = JobBookmark::create($data);
             }else{
                 $isBookmark = false;
-                $isExist->remove();
+                $isExist->delete();
             }
             
             //$this->images($request,$JobBookmark);

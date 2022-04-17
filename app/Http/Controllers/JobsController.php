@@ -259,4 +259,17 @@ class JobsController extends Controller
             return  $this->apiResponse($data,404);
         }
     }
+
+    public function users(Request $request,$id)
+    {
+        try{
+            $users = Users::paginate(8);
+            $data['data'] = $users;
+            $data['message'] = 'done';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
 }

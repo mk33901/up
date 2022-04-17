@@ -114,6 +114,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('jobs/{id}/bookmark', 'JobsController@bookmark');
     Route::post('jobs/{id}/feedback', 'JobsController@feedback');
     Route::post('job/detail/{id}', 'JobsController@detail');
+    Route::post('job/users/{id}', 'JobsController@users');
 
     Route::get('language', 'LanguageController@index');
     Route::post('language', 'LanguageController@store');

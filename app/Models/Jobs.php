@@ -124,7 +124,7 @@ class Jobs extends Model
      */
     public function invites(): HasMany
     {
-        return $this->hasMany(Invites::class);
+        return $this->hasMany(Invites::class,"job_id","id");
     }
 
     /**
@@ -134,6 +134,6 @@ class Jobs extends Model
      */
     public function proposal(): HasMany
     {
-        return $this->hasMany(Proposals::class);
+        return $this->hasMany(Proposals::class,"job_id","id");
     }
 }

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
 use App\Models\JobQuestions;
-use App\Models\Users;
+use App\Models\User;
 
 class JobsController extends Controller
 {
@@ -264,7 +264,7 @@ class JobsController extends Controller
     public function users(Request $request,$id)
     {
         try{
-            $users = Users::paginate(8);
+            $users = User::paginate(8);
             $data['data'] = $users;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);

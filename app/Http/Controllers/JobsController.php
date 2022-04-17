@@ -25,6 +25,7 @@ class JobsController extends Controller
     {
         try{
             $per_page = 8;
+            $user_id= ( auth()->user())? auth()->user()->id:0;
             $page = (isset($_GET['page']) && $_GET['page'] > 0) ? intval($_GET['page']) : 1;
             if($request->per_page){
                 $per_page=$request->per_page;
@@ -36,8 +37,9 @@ class JobsController extends Controller
             jobs.*,
             categories.name as categories,
             specializations.name as specializations,
-            job_preferences.*,
-            clients.*
+            job_preferences.job_id,job_preferences.english_level,job_preferences.hours_per_week,job_preferences.hire_date,job_preferences.no_of_professionals,job_preferences.type_of_talent,job_preferences.location,
+            clients.user_id,clients.uuid,clients.name,clients.description,clients.company_name,clients.company_website,clients.company_tag_line,clients.company_description,clients.company_owner,clients.company_phone,clients.company_vat,clients.company_timezone,clients.company_country,clients.company_address,clients.company_city,clients.company_zip,
+            job_bookmarks.id as bookmark
         FROM
             jobs
         JOIN  job_preferences ON
@@ -48,6 +50,7 @@ class JobsController extends Controller
             specializations.id = jobs.speciality_id
         join clients ON
             clients.id=jobs.client_id
+            left join job_bookmarks on  job_bookmarks.job_id=jobs.id and job_bookmarks.user_id=".$user_id."
             limit ".$offset.", ".$per_page);
             $data['data'] = $jobs;
             $data['message'] = 'block';
@@ -94,7 +97,11 @@ class JobsController extends Controller
     public function store(CreateJobRequest $request)
     {
         try{
-            $Jobs = Jobs::create($request->except('_token'));
+            $data = $request->except('_token', 'english_level', 'hours_per_week', 'hire_date', 'no_of_professionals', 'type_of_talent', 'location');
+            $data['user_id'] = auth()->user()->id;
+            $data['client_id'] = auth()->user()->id;
+            $Jobs = Jobs::create($data);
+            $jobPref = JobPreference::create($request->except('_token','title', 'description', 'category_id', 'speciality_id', 'edit_scope', 'time', 'level_experience', 'user_id', 'client_id', 'budget'));
             //$this->images($request,$Jobs);
             $data['data'] = $Jobs;
             $data['message'] = 'created';
@@ -114,12 +121,14 @@ class JobsController extends Controller
     public function show(Request $request,$id)
     {
         try{
+            $user_id= ( auth()->user())? auth()->user()->id:0;
             $Jobs = DB::select("SELECT
             jobs.*,
             categories.name as categories,
             specializations.name as specializations,
-            job_preferences.*,
-            clients.*
+            job_preferences.job_id,job_preferences.english_level,job_preferences.hours_per_week,job_preferences.hire_date,job_preferences.no_of_professionals,job_preferences.type_of_talent,job_preferences.location,
+            clients.user_id,clients.uuid,clients.name,clients.description,clients.company_name,clients.company_website,clients.company_tag_line,clients.company_description,clients.company_owner,clients.company_phone,clients.company_vat,clients.company_timezone,clients.company_country,clients.company_address,clients.company_city,clients.company_zip,
+            job_bookmarks.id as bookmark
         FROM
             jobs
         JOIN  job_preferences ON
@@ -129,7 +138,9 @@ class JobsController extends Controller
         JOIN  specializations ON
             specializations.id = jobs.speciality_id
         join clients ON
-            clients.id=jobs.client_id where jobs.id='".$id."'");
+            clients.id=jobs.client_id
+            left join job_bookmarks on  job_bookmarks.job_id=jobs.id and job_bookmarks.user_id=".$user_id."
+             where jobs.id='".$id."'");
             $data['data'] = $Jobs;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
@@ -227,6 +238,20 @@ class JobsController extends Controller
             $newBookmark->feedback = $request->feedback;
             $newBookmark->save();
             $data['data'] = [];
+            $data['message'] = 'done';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
+
+    public function detail(Request $request,$id)
+    {
+        try{
+            $Jobs = Jobs::with('preference','proposal','invites')->find($id);
+            $data['data'] = $Jobs;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+Route::get('updates', 'APi\AuthController@updatecategory');
 Route::group([ 'prefix' => 'auth'], function (){
     Route::group(['middleware' => ['guest:api']], function () {
         Route::post('login', 'Api\AuthController@login');
@@ -33,26 +33,26 @@ Route::group([ 'prefix' => 'auth'], function (){
 Route::group(['middleware' => 'auth:api'], function() {
 
 
-    Route::get('category', 'CategoriesController@index');
-    Route::post('category', 'CategoriesController@store');
-    Route::post('category/search', 'CategoriesController@search');
-    Route::post('category/{id}', 'CategoriesController@show');
-    Route::post('category/{id}/update', 'CategoriesController@update');
-    Route::post('category/{id}/remove', 'CategoriesController@destroy');
+    // Route::get('category', 'CategoriesController@index');
+    // Route::post('category', 'CategoriesController@store');
+    // Route::post('category/search', 'CategoriesController@search');
+    // Route::post('category/{id}', 'CategoriesController@show');
+    // Route::post('category/{id}/update', 'CategoriesController@update');
+    // Route::post('category/{id}/remove', 'CategoriesController@destroy');
 
-    Route::get('certificate', 'CertificateController@index');
-    Route::post('certificate', 'CertificateController@store');
-    Route::post('certificate/search', 'CertificateController@search');
-    Route::post('certificate/{id}', 'CertificateController@show');
-    Route::post('certificate/{id}/update', 'CertificateController@update');
-    Route::post('certificate/{id}/remove', 'CertificateController@destroy');
+    // Route::get('certificate', 'CertificateController@index');
+    // Route::post('certificate', 'CertificateController@store');
+    // Route::post('certificate/search', 'CertificateController@search');
+    // Route::post('certificate/{id}', 'CertificateController@show');
+    // Route::post('certificate/{id}/update', 'CertificateController@update');
+    // Route::post('certificate/{id}/remove', 'CertificateController@destroy');
 
-    Route::get('specialization', 'SpecializationController@index');
-    Route::post('specialization', 'SpecializationController@store');
-    Route::post('specialization/search', 'SpecializationController@search');
-    Route::post('specialization/{id}', 'SpecializationController@show');
-    Route::post('specialization/{id}/update', 'SpecializationController@update');
-    Route::post('specialization/{id}/remove', 'SpecializationController@destroy');
+    // Route::get('specialization', 'SpecializationController@index');
+    // Route::post('specialization', 'SpecializationController@store');
+    // Route::post('specialization/search', 'SpecializationController@search');
+    // Route::post('specialization/{id}', 'SpecializationController@show');
+    // Route::post('specialization/{id}/update', 'SpecializationController@update');
+    // Route::post('specialization/{id}/remove', 'SpecializationController@destroy');
 
     // Route::get('education', 'EducationController@index');
     // Route::post('education', 'EducationController@store');
@@ -113,6 +113,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('jobs/{id}/remove', 'JobsController@destroy');
     Route::post('jobs/{id}/bookmark', 'JobsController@bookmark');
     Route::post('jobs/{id}/feedback', 'JobsController@feedback');
+    Route::post('job/detail/{id}', 'JobsController@detail');
 
     Route::get('language', 'LanguageController@index');
     Route::post('language', 'LanguageController@store');
@@ -136,12 +137,12 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('portfolio/{id}/update', 'PortfolioController@update');
     Route::post('portfolio/{id}/remove', 'PortfolioController@destroy');
 
-    Route::get('skills', 'SkillsController@index');
-    Route::post('skills', 'SkillsController@store');
-    Route::post('skills/search', 'SkillsController@search');
-    Route::post('skills/{id}', 'SkillsController@show');
-    Route::post('skills/{id}/update', 'SkillsController@update');
-    Route::post('skills/{id}/remove', 'SkillsController@destroy');
+    // Route::get('skills', 'SkillsController@index');
+    // Route::post('skills', 'SkillsController@store');
+    // Route::post('skills/search', 'SkillsController@search');
+    // Route::post('skills/{id}', 'SkillsController@show');
+    // Route::post('skills/{id}/update', 'SkillsController@update');
+    // Route::post('skills/{id}/remove', 'SkillsController@destroy');
 
     Route::get('testimonial', 'TestimonialController@index');
     Route::post('testimonial', 'TestimonialController@store');
@@ -179,6 +180,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('getjobs/{id}', 'JobsController@store');
     Route::get('users/all', 'UserController@index');
     Route::post('users/update', 'UserController@update');
+    Route::post('users/find/{search}', 'UserController@search');
 
     Route::post('bookmark', 'JobBookmarkController@store');
 

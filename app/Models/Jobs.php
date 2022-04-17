@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Proposals;
 
 class Jobs extends Model
 {
@@ -24,7 +25,7 @@ class Jobs extends Model
      *
      * @var array
      */
-    protected $fillable = ['title','description','category_id','speciality_id','edit_scope','time','level_experience','budget','client_id'];
+    protected $fillable = ['title','description','category_id','speciality_id','edit_scope','time','level_experience','budget','client_id','draft'];
 
     /**
      * Get the category that owns the Jobs
@@ -124,5 +125,15 @@ class Jobs extends Model
     public function invites(): HasMany
     {
         return $this->hasMany(Invites::class);
+    }
+
+    /**
+     * Get all of the proposal for the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function proposal(): HasMany
+    {
+        return $this->hasMany(Proposals::class);
     }
 }

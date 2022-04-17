@@ -123,4 +123,26 @@ class UserController extends Controller
     {
         //
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request,$search)
+    {
+        try{
+            $search = trim($search);
+            $user = User::where('name','like','%'.$search.'%')->orwhere('email','like','%'.$search.'%')->get();
+            //$this->images($request,$user);
+            $data['data'] = $user;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
 }

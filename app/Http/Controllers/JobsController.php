@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
 use App\Models\JobQuestions;
+use App\Models\Users;
 
 class JobsController extends Controller
 {

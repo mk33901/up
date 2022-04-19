@@ -124,7 +124,9 @@ class JobsController extends Controller
             clients.id=jobs.client_id
             left join job_bookmarks on  job_bookmarks.job_id=jobs.id and job_bookmarks.user_id=".$user_id."
              where jobs.id='".$id."'");
+            $questions = JobQuestions::where('job_id',$id)->get();
             $data['data'] = $Jobs;
+            $data['data']['questions'] = $questions;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

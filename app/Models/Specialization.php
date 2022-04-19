@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Categories;
+use App\Traits\UuidTraits;
 
 class Specialization extends Model
 {
-    use HasFactory;
+    use HasFactory, UuidTraits;
     /**
      * The attributes that are mass assignable.
      *

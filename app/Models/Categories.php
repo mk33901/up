@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\Jobs;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\UuidTraits;
 
 class Categories extends Model
 {
-    use HasFactory;
+    use HasFactory, UuidTraits;
      /**
      * The attributes that are mass assignable.
      *

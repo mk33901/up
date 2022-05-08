@@ -110,7 +110,7 @@ class JobsController extends Controller
             categories.name as categories,
             specializations.name as specializations,
             job_preferences.job_id,job_preferences.english_level,job_preferences.hours_per_week,job_preferences.hire_date,job_preferences.no_of_professionals,job_preferences.type_of_talent,job_preferences.location,
-            clients.user_id,clients.uuid,clients.name,clients.description,clients.company_name,clients.company_website,clients.company_tag_line,clients.company_description,clients.company_owner,clients.company_phone,clients.company_vat,clients.company_timezone,clients.company_country,clients.company_address,clients.company_city,clients.company_zip,
+            clients.user_id,clients.uuid,clients.name,clients.company_name,clients.company_website,clients.company_tag_line,clients.company_description,clients.company_owner,clients.company_phone,clients.company_vat,clients.company_timezone,clients.company_country,clients.company_address,clients.company_city,clients.company_zip,
             job_bookmarks.id as bookmark
         FROM
             jobs

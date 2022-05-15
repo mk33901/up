@@ -145,4 +145,26 @@ class UserController extends Controller
             return  $this->apiResponse($data,404);
         }
     }
+
+    public function validateUser(Request $request,$id)
+    {
+        try {
+            $user = User::where('email',$request->email)->first();
+            if(!$user)
+            {
+                $user = New User();
+                $user->email = $request->email;
+                $user->save();
+            }else{
+                $data['message'] = "user already exist";
+                return  $this->apiResponse($data,404);
+            }
+            $data['data'] = $user;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }   
+    }
 }

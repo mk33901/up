@@ -37,7 +37,7 @@ class InvitesController extends Controller
     {
         try{
             $data = $request->except(['_token']);
-            $data['user_id'] = auth()->user()->id;
+            // $data['user_id'] = auth()->user()->id;
             $Invites = Invites::create($data);
             //$this->images($request,$Invites);
             $data['data'] = $Invites;

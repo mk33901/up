@@ -10,7 +10,7 @@ trait UuidTraits
     protected static function boot()
     {
         parent::boot();
-        foreach (['creating'] as $event) {
+        foreach (['creating','updating'] as $event) {
             static::$event(function ($model) use ($event) {
                 $model->uuid = Str::uuid();
             });

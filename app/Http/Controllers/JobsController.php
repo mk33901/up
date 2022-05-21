@@ -14,6 +14,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
 use App\Models\JobQuestions;
 use App\Models\User;
+use App\Models\Proposals;
+use App\Models\JobPreference;
 
 class JobsController extends Controller
 {
@@ -263,6 +265,20 @@ class JobsController extends Controller
             $Jobs = DB::select("
             SELECT users.*,proposals.hired,proposals.messaged,proposals.shortlisted,proposals.description,proposals.created_at,proposals.rate  FROM `proposals` left join users on users.id=proposals.user_id  WHERE `job_id` = ".$id." and proposals.deleted_at is null union  SELECT users.*,'0' as hired,'0' as messaged,'0' as shortlisted,'0' as description,invites.created_at,0 as rate   FROM `invites` left join users on users.id=invites.user_id WHERE `job_id` = ".$id."");
             $data['data'] = $Jobs;
+            $data['message'] = 'done';
+            return  $this->apiResponse($data,200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+    public function shortlist(Request $request,$id)
+    {
+        try {
+            $proposal = Proposals::find($id);
+            $proposal->shortlisted = !$proposal->shortlisted;
+            $proposal->save(); 
+            $data['data'] = $proposal;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);
         } catch (\Exception $e) {

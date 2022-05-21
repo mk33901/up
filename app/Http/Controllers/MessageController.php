@@ -19,7 +19,7 @@ class MessageController extends Controller
     {
         try {
             $id = auth()->user()->id;
-            $message = DB::select("SELECT users.id,users.name,m.content
+            $message = DB::select("SELECT users.uuid,users.id,users.name,m.content
 FROM messages m join users on users.id=m.from_id
 WHERE m.to_id = " . $id . " AND
       m.id = (SELECT MAX(m2.id)

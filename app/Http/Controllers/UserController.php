@@ -21,7 +21,7 @@ class UserController extends Controller
             $language = Language::all();
             $education = Education::all();
             $certificate = Certificate::all();
-            $user = User::with('preference','language','education','testimonial','employement','expirence')->paginate(8);
+            $user = User::with('preference','language','education','testimonial','employement','expirence','portfolio')->paginate(8);
             $data['data']['user'] = $user;
             $data['data']['education'] = $education;
             $data['data']['certificate'] = $certificate;
@@ -66,7 +66,7 @@ class UserController extends Controller
             $language = Language::all();
             $education = Education::all();
             $certificate = Certificate::all();
-            $user = User::with('preference','language','education','testimonial','employement','expirence')->find($id);
+            $user = User::with('preference','language','education','testimonial','employement','expirence','portfolio')->find($id);
             $data['data']['user'] = $user;
             $data['data']['education'] = $education;
             $data['data']['certificate'] = $certificate;

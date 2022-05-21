@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use App\Models\UserLanguage;
 use App\Models\UserEducation;
 use App\Traits\UuidTraits;
+use App\Models\Portfolio;
 
 class User extends Authenticatable
 {

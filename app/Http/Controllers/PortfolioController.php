@@ -53,7 +53,7 @@ class PortfolioController extends Controller
             $data = $request->except('_token');
             $data['user_id'] = auth()->user()->id;
             $Portfolio = Portfolio::create($data);
-            $this->assets($Portfolio,'file',$request);
+            $this->assets($Portfolio,'files',$request->all());
             $data['data'] = $Portfolio;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -99,7 +99,7 @@ class PortfolioController extends Controller
             $data['user_id'] = auth()->user()->id;
             $Portfolio = Portfolio::find($id);
             $Portfolio->update($data);
-            $this->assets($Portfolio,'file',$request);
+            $this->assets($Portfolio,'files',$request->all());
             $data['data'] = $Portfolio;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

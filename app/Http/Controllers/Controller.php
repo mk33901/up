@@ -19,7 +19,7 @@ class Controller extends BaseController
 	public function assets($model,$type,$request)
 	{
 		try {
-			$files = $request[$type];
+			$files = json_decode($request[$type]);
 			if(count($files))
 			{
 				foreach ($files as $file) {

@@ -15,7 +15,7 @@ class UserPreference extends Model
      *
      * @var array
      */
-    protected $fillable = ['uuid', 'user_id', 'availability', 'visibility', 'category_id', 'video_introduction', 'video_type','title','overview','hourly_rate','currency'];
+    protected $fillable = ['uuid', 'user_id', 'availability', 'visibility', 'category_id', 'video_introduction', 'video_type','title','overview','hourly_rate','currency','skill'];
 
     /**
      * Get the user that owns the UserPreference

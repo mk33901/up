@@ -6,6 +6,8 @@ use App\Traits\UuidTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Jobs;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Proposals extends Model
 {
@@ -35,5 +37,15 @@ class Proposals extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get all of the question for the Proposals
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function question(): HasMany
+    {
+        return $this->hasMany(ProposalQuestion::class,);
     }
 }

@@ -187,6 +187,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('users/update', 'UserController@update');
     Route::post('users/find/{search}', 'UserController@search');
 
+    Route::post('users/start', 'UserController@start');
+
     Route::post('bookmark', 'JobBookmarkController@store');
     Route::post('country', 'CountryController@index');
 

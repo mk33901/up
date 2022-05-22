@@ -6,6 +6,7 @@ use App\Models\Certificate;
 use App\Models\Education;
 use App\Models\Language;
 use App\Models\User;
+use App\Models\UserPreference;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -166,5 +167,37 @@ class UserController extends Controller
             $data['message'] = $e->getMessage();
             return  $this->apiResponse($data,404);
         }   
+    }
+    public function start(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            if(!$user)
+            {
+                $user = New User();
+                $user->name = $request->name;
+                $user->save();
+                $userPref = UserPreference::where('user_id',$user->id)->first();
+                if(!$userPref)
+                {
+                    $userPref = new UserPreference();
+                    $userPref->user_id = $user->id;
+                }
+                if($userPref)
+                {
+                    $userPref->title = $request->title;
+                    $userPref->description = $request->overview;
+                    $userPref->skill = $request->skill;
+                    $userPref->hourly_rate = $request->budget;
+                }
+                $userPref->save();
+            }
+            $data['data'] = $user;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Proposals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ProposalQuestion;
 
 class ProposalsController extends Controller
 {
@@ -54,6 +55,16 @@ class ProposalsController extends Controller
             $data['user_id'] = auth()->user()->id;
             $Proposals = Proposals::create($data);
             //$this->images($request,$Proposals);
+            $question = json_decode($request->questions);
+            foreach($question as $k=>$q)
+            {
+                $ProposalQuestions = new ProposalQuestion();
+                $ProposalQuestions->question_id = $k;
+                $ProposalQuestions->answer = $q;
+                $ProposalQuestions->proposal_id = $Proposals->id;
+                $ProposalQuestions->save();
+            }
+            $this->assets($Proposals,'files',$request->all());
             $data['data'] = $Proposals;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);

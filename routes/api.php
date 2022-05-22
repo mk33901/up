@@ -187,6 +187,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('users/find/{search}', 'UserController@search');
 
     Route::post('bookmark', 'JobBookmarkController@store');
+    Route::post('country', 'CountryController@index');
 
     Route::get('feedback', 'JobFeedbackController@index');
     Route::post('feedback', 'JobFeedbackController@store');

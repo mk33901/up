@@ -14,7 +14,15 @@ class CountryController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            $country = Country::all();
+            $data['data'] = $country;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

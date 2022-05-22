@@ -25,7 +25,7 @@ class Jobs extends Model
      *
      * @var array
      */
-    protected $fillable = ['title','description','category_id','speciality_id','edit_scope','time','level_experience','budget','client_id','draft'];
+    protected $fillable = ['title','description','category_id','speciality_id','edit_scope','time','level_experience','budget','client_id','draft','status','expiry_at'];
 
     /**
      * Get the category that owns the Jobs

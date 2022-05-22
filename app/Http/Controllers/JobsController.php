@@ -263,7 +263,7 @@ class JobsController extends Controller
     {
         try {
             $Jobs = DB::select("
-            SELECT users.*,proposals.hired,proposals.messaged,proposals.shortlisted,proposals.description,proposals.created_at,proposals.rate  FROM `proposals` left join users on users.id=proposals.user_id  WHERE `job_id` = ".$id." and proposals.deleted_at is null union  SELECT users.*,'0' as hired,'0' as messaged,'0' as shortlisted,'0' as description,invites.created_at,0 as rate   FROM `invites` left join users on users.id=invites.user_id WHERE `job_id` = ".$id."");
+            SELECT users.*,proposals.hired,proposals.messaged,proposals.shortlisted,proposals.description,proposals.created_at,proposals.rate,'0' as invited  FROM `proposals` left join users on users.id=proposals.user_id  WHERE `job_id` = ".$id." and proposals.deleted_at is null union  SELECT users.*,'0' as hired,'0' as messaged,'0' as shortlisted,'0' as description,invites.created_at,0 as rate,'1' as invited   FROM `invites` left join users on users.id=invites.user_id WHERE `job_id` = ".$id."");
             $data['data'] = $Jobs;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);

@@ -146,7 +146,7 @@ class UserController extends Controller
         }
     }
 
-    public function validateUser(Request $request,$id)
+    public function validateUser(Request $request)
     {
         try {
             $user = User::where('email',$request->email)->first();

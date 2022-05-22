@@ -286,4 +286,16 @@ class JobsController extends Controller
             return  $this->apiResponse($data,404);
         }
     }
+    public function client(Request $request)
+    {
+        try {
+            $jobs = Jobs::with('preference','proposal','invites')->where('user_id',auth()->user()->id)->get();
+            $data['data'] = $jobs;
+            $data['message'] = 'done';
+            return  $this->apiResponse($data,200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
 }

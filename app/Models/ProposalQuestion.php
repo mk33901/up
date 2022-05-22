@@ -15,7 +15,7 @@ class ProposalQuestion extends Model
      *
      * @var array
      */
-    protected $fillable = ['proposal_id','question_id','answer'];
+    protected $fillable = ['proposal_id','question_id','answer','user_id'];
 
 
     /**
@@ -26,5 +26,14 @@ class ProposalQuestion extends Model
     public function proposals(): BelongsTo
     {
         return $this->belongsTo(Proposals::class);
+    }
+    /**
+     * Get the user that owns the ProposalQuestion
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

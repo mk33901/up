@@ -51,14 +51,16 @@ class ProposalsController extends Controller
     public function store(Request $request)
     {
         try{
+            $user = auth()->user();
             $data = $request->except(['_token']);
-            $data['user_id'] = auth()->user()->id;
+            $data['user_id'] = $user->id;
             $Proposals = Proposals::create($data);
             //$this->images($request,$Proposals);
             $question = json_decode($request->questions);
             foreach($question as $k=>$q)
             {
                 $ProposalQuestions = new ProposalQuestion();
+                $ProposalQuestions->user_id = $user->id;
                 $ProposalQuestions->question_id = $k;
                 $ProposalQuestions->answer = $q;
                 $ProposalQuestions->proposal_id = $Proposals->id;

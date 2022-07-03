@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Jobs;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Proposals extends Model
 {
@@ -47,5 +48,15 @@ class Proposals extends Model
     public function question(): HasMany
     {
         return $this->hasMany(ProposalQuestion::class,);
+    }
+
+    /**
+     * Get the contracts associated with the Proposals
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function contracts(): HasOne
+    {
+        return $this->hasOne(Contracts::class);
     }
 }

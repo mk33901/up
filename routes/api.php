@@ -30,6 +30,8 @@ Route::group([ 'prefix' => 'auth'], function (){
     });
 });
 
+Route::post('jobs/getData', 'JobsController@create');
+
 Route::group(['middleware' => 'auth:api'], function() {
 
 
@@ -106,7 +108,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     
     Route::get('jobs', 'JobsController@index');
     Route::post('jobs', 'JobsController@store');
-    Route::post('jobs/getData', 'JobsController@create');
+    
     Route::post('jobs/search', 'JobsController@search');
     Route::post('jobs/{id}', 'JobsController@show');
     Route::post('jobs/{id}/update', 'JobsController@update');
@@ -179,9 +181,11 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('user/{id}', 'UserController@show');
     Route::post('validate', 'UserController@validateUser');
     Route::post('invite', 'InvitesController@store');
-    Route::post('contract/{id}', 'ContractsController@store');
+    Route::post('contract', 'ContractsController@store');
+    Route::get('contract/{id}', 'ContractsController@list');
     Route::post('getjobs/{id}', 'JobsController@store');
     Route::get('users/all', 'UserController@index');
+    Route::post('users/search', 'UserController@search');
     Route::get('client/jobs', 'JobsController@client');
     Route::get('job/user/{id}', 'JobsController@loadusers');
     Route::post('users/update', 'UserController@update');

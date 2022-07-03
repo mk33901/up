@@ -157,9 +157,11 @@ class UserController extends Controller
                 $user->email = $request->email;
                 $user->save();
             }else{
+                $data['isExist'] = true;
                 $data['message'] = "user already exist";
                 return  $this->apiResponse($data,404);
             }
+            $data['isExist'] = false;
             $data['data'] = $user;
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);

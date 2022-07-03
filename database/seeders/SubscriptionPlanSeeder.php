@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Skills;
 
-class SkillsSeeder extends Seeder
+class SubscriptionPlanSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +13,6 @@ class SkillsSeeder extends Seeder
      */
     public function run()
     {
-        Skills::factory(1000)->create();
+        //
     }
 }

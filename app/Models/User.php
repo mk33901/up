@@ -161,4 +161,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transactions::class);
     }
+
+    /**
+     * Get all of the proposal for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function proposal(): HasMany
+    {
+        return $this->hasMany(Proposals::class);
+    }
 }

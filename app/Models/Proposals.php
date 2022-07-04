@@ -47,7 +47,7 @@ class Proposals extends Model
      */
     public function question(): HasMany
     {
-        return $this->hasMany(ProposalQuestion::class,);
+        return $this->hasMany(ProposalQuestion::class,'proposal_id','id');
     }
 
     /**

@@ -27,7 +27,7 @@ class Proposals extends Model
      */
     public function jobs(): BelongsTo
     {
-        return $this->belongsTo(Jobs::class);
+        return $this->belongsTo(Jobs::class,'job_id','id');
     }
 
     /**

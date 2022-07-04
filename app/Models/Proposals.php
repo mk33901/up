@@ -18,7 +18,7 @@ class Proposals extends Model
      *
      * @var array
      */
-    protected $fillable = ['job_id','user_id','rate','uuid','description','messaged','shortlisted','hired'];
+    protected $fillable = ['job_id','user_id','rate','uuid','description','messaged','shortlisted','hired','status'];
 
     /**
      * Get the jobs that owns the Proposals

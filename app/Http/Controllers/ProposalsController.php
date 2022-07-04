@@ -21,7 +21,8 @@ class ProposalsController extends Controller
             if($request->per_page){
                 $per_page=$request->per_page;
             }
-            $Proposals = Proposals::paginate($per_page);
+            $user_id = auth()->user()->id;
+            $Proposals = Proposals::with('jobs','question')->where('user_id',$user_id)->paginate($per_page);
 
             $data['data'] = $Proposals;
             $data['message'] = 'block';

@@ -31,7 +31,7 @@ Route::group([ 'prefix' => 'auth'], function (){
 });
 
 Route::post('jobs/getData', 'JobsController@create');
-
+Route::post('validate', 'UserController@validateUser');
 Route::group(['middleware' => 'auth:api'], function() {
 
 
@@ -179,7 +179,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('timeentry/attachment/{id}/remove', 'TimeEntryAttachmentController@destroy');
 
     Route::post('user/{id}', 'UserController@show');
-    Route::post('validate', 'UserController@validateUser');
+    
     Route::post('invite', 'InvitesController@store');
     Route::post('contract', 'ContractsController@store');
     Route::get('contract/{id}', 'ContractsController@list');
@@ -202,5 +202,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('feedback/{id}', 'JobFeedbackController@show');
     Route::post('feedback/{id}/update', 'JobFeedbackController@update');
     Route::post('feedback/{id}/remove', 'JobFeedbackController@destroy');
+
+
+    Route::get('payment/order', 'PaymentOrderController@index');
+    Route::post('payment/order', 'PaymentOrderController@store');
+    Route::post('payment/pay', 'PaymentOrderController@pay');
+    Route::post('payment/order/search', 'PaymentOrderController@search');
+    Route::post('payment/order/{id}', 'PaymentOrderController@show');
+    Route::post('payment/order/{id}/update', 'PaymentOrderController@update');
+    Route::post('payment/order/{id}/remove', 'PaymentOrderController@destroy');
 });
 

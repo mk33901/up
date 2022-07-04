@@ -136,4 +136,14 @@ class Jobs extends Model
     {
         return $this->hasMany(Proposals::class,"job_id","id");
     }
+
+    /**
+     * Get all of the transaction for the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function transaction(): HasMany
+    {
+        return $this->hasMany(Transactions::class);
+    }
 }

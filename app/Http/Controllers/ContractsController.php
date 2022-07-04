@@ -93,4 +93,19 @@ class ContractsController extends Controller
     {
         //
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Contracts  $contracts
+     * @return \Illuminate\Http\Response
+     */
+    public function list(Request $request,$id)
+    {
+        try {
+            //code...
+        } catch (\Exception $e) {
+            //throw $th;
+        }
+    }
 }

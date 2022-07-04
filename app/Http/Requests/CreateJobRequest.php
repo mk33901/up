@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use App\Http\Requests\MainRequest;
 
 
-class CreateJobRequest extends FormRequest
+class CreateJobRequest extends MainRequest
 {
     /**
      * Determine if the user is authorized to make this request.

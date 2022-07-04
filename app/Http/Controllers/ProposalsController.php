@@ -83,9 +83,18 @@ class ProposalsController extends Controller
      * @param  \App\Proposals  $Proposals
      * @return \Illuminate\Http\Response
      */
-    public function show(Proposals $Proposals)
+    public function show(Request $request,$id)
     {
-        //
+        try{
+            $user_id = auth()->user()->id;
+            $Proposals = Proposals::with('jobs','question')->where('user_id',$user_id)->where('id',$id)->first();
+            $data['data'] = $Proposals;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

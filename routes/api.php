@@ -104,6 +104,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('proposal/{id}', 'ProposalsController@show');
     Route::post('proposal/{id}/update', 'ProposalsController@update');
     Route::post('proposal/{id}/remove', 'ProposalsController@destroy');
+    Route::post('proposal/{id}/status', 'ProposalsController@status');
 
     
     Route::get('jobs', 'JobsController@index');

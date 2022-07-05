@@ -160,4 +160,19 @@ class ProposalsController extends Controller
             return  $this->apiResponse($data,404);
         }
     }
+
+    public function status(Request $request,$id)
+    {
+        try{
+            $data['status'] = $request->status;
+            $Proposals = Proposals::find($id);
+            $Proposals->update($data);
+            $data['data'] = $Proposals;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
 }

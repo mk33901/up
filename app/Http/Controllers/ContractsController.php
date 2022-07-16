@@ -75,9 +75,20 @@ class ContractsController extends Controller
      * @param  \App\Models\Contracts  $contracts
      * @return \Illuminate\Http\Response
      */
-    public function show(Contracts $contracts)
+    public function show(Request $request,$id)
     {
-        //
+        try{
+            $data = $request->except(['_token']);
+            // $data['user_id'] = auth()->user()->id;
+            $Contracts = Contracts::where('id',$id)->first();
+            //$this->images($request,$Contracts);
+            $data['data'] = $Contracts;
+            $data['message'] = 'show Contracts';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

@@ -24,7 +24,7 @@ class Contracts extends Model
      */
     public function proposal(): HasOne
     {
-        return $this->hasOne(Proposals::class);
+        return $this->hasOne(Proposals::class,'id','proposal_id');
     }
 
     /**
@@ -34,7 +34,7 @@ class Contracts extends Model
      */
     public function user(): HasOne
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class,'id','user_id');
     }
 
     /**

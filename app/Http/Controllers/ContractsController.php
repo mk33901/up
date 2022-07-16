@@ -80,7 +80,7 @@ class ContractsController extends Controller
         try{
             $data = $request->except(['_token']);
             // $data['user_id'] = auth()->user()->id;
-            $Contracts = Contracts::where('id',$id)->first();
+            $Contracts = Contracts::with('proposal','user','client','proposal.jobs')->where('id',$id)->first();
             //$this->images($request,$Contracts);
             $data['data'] = $Contracts;
             $data['message'] = 'show Contracts';

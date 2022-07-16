@@ -8,6 +8,8 @@ use App\Models\Language;
 use App\Models\User;
 use App\Models\UserPreference;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\JobQuestions;
 
 class UserController extends Controller
 {
@@ -202,4 +204,45 @@ class UserController extends Controller
             return  $this->apiResponse($data,404);
         }
     }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Jobs  $Jobs
+     * @return \Illuminate\Http\Response
+     */
+    public function jobs(Request $request,$id)
+    {
+        try{
+            $user_id= ( auth()->user())? auth()->user()->id:0;
+            $Jobs = DB::select("SELECT
+            jobs.*,
+            categories.name as categories,
+            specializations.name as specializations,
+            job_preferences.job_id,job_preferences.english_level,job_preferences.hours_per_week,job_preferences.hire_date,job_preferences.no_of_professionals,job_preferences.type_of_talent,job_preferences.location,
+            clients.user_id,clients.uuid,clients.name,clients.company_name,clients.company_website,clients.company_tag_line,clients.company_description,clients.company_owner,clients.company_phone,clients.company_vat,clients.company_timezone,clients.company_country,clients.company_address,clients.company_city,clients.company_zip,
+            job_bookmarks.id as bookmark
+        FROM
+            jobs
+        JOIN  job_preferences ON
+            job_preferences.job_id = jobs.id
+        JOIN  categories ON
+            categories.id = jobs.category_id
+        JOIN  specializations ON
+            specializations.id = jobs.speciality_id
+        join clients ON
+            clients.id=jobs.client_id
+            left join job_bookmarks on  job_bookmarks.job_id=jobs.id and job_bookmarks.user_id=".$user_id."
+             where jobs.user_id='".$user_id."'");
+            $questions = JobQuestions::where('job_id',$id)->get();
+            $data['data'] = $Jobs;
+            $data['data']['questions'] = $questions;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contracts;
+use App\Models\PaymentOrder;
 use Illuminate\Http\Request;
 
 class ContractsController extends Controller
@@ -12,9 +13,22 @@ class ContractsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Contracts = Contracts::with('proposal','user','client','proposal.jobs')->paginate($per_page);
+
+            $data['data'] = $Contracts;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -39,8 +53,14 @@ class ContractsController extends Controller
             $data = $request->except('_token');
             $data['user_id'] = auth()->user()->id;
             $contracts = Contracts::create($data);
+
+            $orderData = [];
+            $orderData['user'] = auth()->user();
+            $orderData['order'] = $contracts;
+            $order = New PaymentOrder();
+            $response = $order->createOrder($orderData);
             //$this->images($request,$contracts);
-            $data['data'] = $contracts;
+            $data['data'] = $response;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -106,6 +126,21 @@ class ContractsController extends Controller
             //code...
         } catch (\Exception $e) {
             //throw $th;
+        }
+    }
+
+    public function status(Request $request,$id)
+    {
+        try {
+            $contract = Contracts::where('id',$id)->first();
+            $contract->status = $request->status;
+            $contract->save();
+            $data['data'] = $contract;
+            $data['message'] = 'status updated';
+            return  $this->apiResponse($data,200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
         }
     }
 }

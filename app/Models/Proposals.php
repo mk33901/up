@@ -57,6 +57,6 @@ class Proposals extends Model
      */
     public function contracts(): HasOne
     {
-        return $this->hasOne(Contracts::class);
+        return $this->hasOne(Contracts::class,'proposal_id','id');
     }
 }

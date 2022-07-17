@@ -289,7 +289,7 @@ class JobsController extends Controller
     public function client(Request $request)
     {
         try {
-            $jobs = Jobs::with('preference','proposal','invites')->where('user_id',auth()->user()->id)->get();
+            $jobs = Jobs::with('preference','proposal','invites')->where('user_id',auth()->user()->id)->paginate(8);
             $data['data'] = $jobs;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);

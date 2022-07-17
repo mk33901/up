@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\PaymentOrder;
 use App\Models\Contracts;
-use App\Models\PaymentOrder;
 use Illuminate\Http\Request;
 
 class ContractsController extends Controller

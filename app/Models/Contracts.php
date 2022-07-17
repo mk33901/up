@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use App\Models\Proposals;
+use App\Traits\UuidTraits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contracts extends Model
 {
-    use HasFactory;
+    use HasFactory,UuidTraits;
 
     /**
      * The attributes that are mass assignable.

@@ -11,6 +11,24 @@ class Transactions extends Model
     use HasFactory;
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'user_id',
+        'job_id',
+        'status',
+        'transaction_date',
+        'response',
+        'payment_type',
+        'order_id',
+        'order_token',
+        'payment_response',
+        'amount',
+    ];
+
+    /**
      * Get the user that owns the Transactions
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

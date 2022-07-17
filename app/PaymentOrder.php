@@ -25,7 +25,7 @@ class PaymentOrder
     {
         try {
             $data = $this->generateOrder($data);
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/pg/orders");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/pg/orders")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -34,7 +34,17 @@ class PaymentOrder
     public function payOrder(array $data)
     {
         try {
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/pg/orders/pay");
+            $data = $this->generatePay($data);
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/pg/orders/pay")->body();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    public function getOrderStatus(array $data,$order_id)
+    {
+        try {
+            return $this->call()->get("$this->endUrl/pg/orders/$order_id/payments")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -43,12 +53,36 @@ class PaymentOrder
     public function getSavedCard(array $data,$customer_id)
     {
         try {
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/pg/customers/$customer_id/instruments");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/pg/customers/$customer_id/instruments")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
     }
 
+    public function generatePay($data)
+    {
+        $newData = [];
+        if(isset($data['card']))
+        {
+            $card = $data['card'];
+        }
+        $newData['order_token'] = $data['order_token'];
+        $newData['save_instrument'] = true;
+
+        $card =
+        [
+            "channel"=> "post",
+            "card_number"=> $card["card_number"],
+            "card_holder_name"=> $card["card_holder_name"],
+            "card_expiry_mm"=> $card["card_expiry_mm"],
+            "card_expiry_yy"=> $card["card_expiry_yy"],
+            "card_cvv"=> $card["card_cvv"],
+            "card_display"=> $card["card_display"]
+        ];
+        $newData["payment_method"]["card"]=$card;
+        return $newData;
+
+    }
     public function generateOrder($data)
     {
         $newData = [];
@@ -60,15 +94,20 @@ class PaymentOrder
         {
             $order = $data['order'];
         }
+        $orderId = $order->uuid;
+        if(isset($data['type']))
+        {
+            $orderId = $data['type']."-".$orderId;
+        }
         $newData['customer_details']['customer_id'] = $user->uuid;
         $newData['customer_details']['customer_email'] = $user->email;
-        $newData['customer_details']['customer_phone'] = "888888888";
-        $newData['order_id'] = $order->uuid;
-        $newData['order_amount'] = $order->price;
-        $newData['order_currency'] = $order->currency;
-        $newData['order_meta']['return_url'] = url('/');
-        $newData['order_meta']['notify_url'] = url('/');
-        $newData['order_expiry_time'] = Carbon::now()->addDays(1);
+        $newData['customer_details']['customer_phone'] = "+91888888888";
+        $newData['order_id'] = $orderId;
+        $newData['order_amount'] = (int)$order->price;
+        $newData['order_currency'] = "INR";
+        $newData['order_meta']['return_url'] = url('/')."?order_id={order_id}&order_token={order_token}";
+        $newData['order_meta']['notify_url'] = url('/')."?order_id={order_id}&order_token={order_token}";
+        $newData['order_expiry_time'] = "2022-08-01T11:09:51Z";
         return $newData;
     }
 }

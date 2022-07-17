@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\PaymentOrder;
 use App\Models\Contracts;
+use App\Models\Transactions;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class ContractsController extends Controller
@@ -57,10 +59,18 @@ class ContractsController extends Controller
             $orderData = [];
             $orderData['user'] = auth()->user();
             $orderData['order'] = $contracts;
+            $orderData['type'] = "contract";
             $order = New PaymentOrder();
             $response = $order->createOrder($orderData);
+            $responseData = json_decode($response,true);
+            $transactions = Transactions::create([
+                'user_id' => auth()->user()->id,
+                'status' =>'pending',
+                'transaction_date' => Carbon::now()->format("Y-m-d"),
+                'payment_type'=> 'contract-'.$contracts->uuid
+            ]);
             //$this->images($request,$contracts);
-            $data['data'] = $response;
+            $data['data'] = (isset($responseData)?$responseData['payment_link']:"");
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

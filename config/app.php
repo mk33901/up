@@ -55,6 +55,9 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', null),
+    'appId' => env('PAY_APPID', null),
+    'secret' => env('PAY_SECRET', null),
+    'endUrl' => env('PAY_ENDURL', null),
 
     /*
     |--------------------------------------------------------------------------

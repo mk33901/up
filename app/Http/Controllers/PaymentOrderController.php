@@ -7,13 +7,20 @@ use App\Models\PaymentOrder;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
 use App\PaymentOrder as PaymentOrderClass;
+use App\PayOut;
+use App\Models\Beneficiary;
+use App\Models\Contracts;
+use App\Models\PayoutTransaction;
+use Illuminate\Support\Str;
 
 class PaymentOrderController extends Controller
 {
     public PaymentOrderClass $paymentorder;
-    public function __construct(PaymentOrderClass $paymentorder)
+    public PayOut $payout;
+    public function __construct(PaymentOrderClass $paymentorder,PayOut $payout)
     {
         $this->paymentorder = $paymentorder;
+        $this->payout = $payout;
     }
     /**
      * Display a listing of the resource.
@@ -154,6 +161,82 @@ class PaymentOrderController extends Controller
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
+    }
+
+    public function beneficiary(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $data = [];
+            $data['beneId'] = "BEN".$user->uuid;
+            $data['name'] = $user->name;
+            $data['email'] = $user->name;
+            $data['phone'] = $user->name;
+            if($request->type == 'bank')
+            {
+                $data['bankAccount'] = $request->bank_account;
+                $data['ifsc'] = $request->ifsc;
+                $data['address1'] = $request->address;
+            }else if($request->type == 'card')
+            {
+                $data['cardNo'] = $request->card_no;
+            }
+            $order = $this->payout->addBeneficiary($data);
+            
+            $order = json_decode($order,true);
+            $Beneficiary = Beneficiary::create([
+                'bank_account' => $request->bank_account,
+                'ifsc' => $request->ifsc,
+                'address' => $request->address,
+                'city' => "",
+                'state' => "",
+                'pincode' => "",
+                'cardNo' => $request->card,
+                'is_active' => ($order['subCode']== 200)?true:false,
+                'response_status' => $order['subCode'], 
+                'response' => json_encode($order)
+            ]);
+            $data['data'] = $order['message'];
+            $data['message'] = 'done';
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
+    }
+
+
+    public function transfer(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $data = [];
+            $requestBank = $request->ben_id;
+            $Beneficiary = Beneficiary::where('uuid',$requestBank)->first();
+            $Contract = Contracts::find($request->id);
+            if(!$Beneficiary)
+            {
+                $data['message'] = "Beneficiary not found";
+                return  $this->apiResponse($data, 404);
+            }
+            $transactionId = Str::uuid();
+            $data['beneId'] = "BEN".$Beneficiary->uuid;
+            $data['amount'] = $user->name;
+            $data['transferId'] = $transactionId;
+        
+            $response = $this->payout->requestAsyncTransfer($data);
+            $payout = PayoutTransaction::create([
+                'amount' => $request->amount,
+                'beneficiary_id' => $Beneficiary->id,
+                'contract_id' => $Contract->id,
+                'user_id'=> $Beneficiary->user_id,
+                'response'=> $response
+            ]);
+
+        } catch (\Throwable $th) {
+            $data['message'] = $th->getMessage();
             return  $this->apiResponse($data, 404);
         }
     }

@@ -41,7 +41,7 @@ class PayOut
     public function addBeneficiary(array $data)
     {
         try {
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/payout/v1/addBeneficiary");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/payout/v1/addBeneficiary")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -50,7 +50,7 @@ class PayOut
     public function removeBeneficiary(array $data)
     {
         try {
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/payout/v1/removeBeneficiary");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/payout/v1/removeBeneficiary");
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -59,7 +59,7 @@ class PayOut
     public function requestAsyncTransfer(array $data)
     {
         try {
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/payout/v1/requestAsyncTransfer");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/payout/v1/requestAsyncTransfer");
         } catch (\Throwable $th) {
             //throw $th;
         }

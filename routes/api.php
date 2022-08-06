@@ -215,5 +215,9 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('payment/order/{id}', 'PaymentOrderController@show');
     Route::post('payment/order/{id}/update', 'PaymentOrderController@update');
     Route::post('payment/order/{id}/remove', 'PaymentOrderController@destroy');
+
+
+    Route::post('payout/save', 'PaymentOrderController@beneficiary');
+    Route::post('payout/transfer', 'PaymentOrderController@transfer');
 });
 

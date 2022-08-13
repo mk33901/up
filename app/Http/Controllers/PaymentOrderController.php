@@ -172,7 +172,8 @@ class PaymentOrderController extends Controller
             $benId = "BEN".str_replace("-","_",$user->uuid);
 
             $order = $this->payout->getBeneficiary($benId);
-            $data['data'] = $order['message'];
+            $order = json_decode($order,true);
+            $data['data'] = $order;
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {

@@ -220,5 +220,10 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('payout/save', 'PaymentOrderController@beneficiary');
     Route::post('payout/transfer', 'PaymentOrderController@transfer');
     Route::post('payout/bank', 'PaymentOrderController@getbeneficiary');
+
+    Route::post('widrow', 'WidrowController@index');
+    Route::post('widrow/save', 'WidrowController@store');
+    Route::post('widrow/{id}/update', 'WidrowController@update');
+    Route::post('widrow/{id}/remove', 'WidrowController@destroy');
 });
 

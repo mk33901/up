@@ -165,6 +165,21 @@ class PaymentOrderController extends Controller
         }
     }
 
+    public function getbeneficiary(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $benId = "BEN".str_replace("-","_",$user->uuid);
+
+            $order = $this->payout->getBeneficiary($benId);
+            $data['data'] = $order['message'];
+            $data['message'] = 'done';
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
+    }
     public function beneficiary(Request $request)
     {
         try {

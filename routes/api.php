@@ -219,5 +219,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     Route::post('payout/save', 'PaymentOrderController@beneficiary');
     Route::post('payout/transfer', 'PaymentOrderController@transfer');
+    Route::post('payout/bank', 'PaymentOrderController@getbeneficiary');
 });
 

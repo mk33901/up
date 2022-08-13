@@ -43,7 +43,7 @@ class PayOut
             {
                 return false;
             }
-            return $this->call($token)->post("$this->endUrl/payout/v1/getBeneficiary/$beneficiaryId")->body();
+            return $this->call($token)->get("$this->endUrl/payout/v1/getBeneficiary/$beneficiaryId")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }

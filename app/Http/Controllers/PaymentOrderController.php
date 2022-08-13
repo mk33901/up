@@ -170,10 +170,12 @@ class PaymentOrderController extends Controller
         try {
             $user = auth()->user();
             $benId = "BEN".str_replace("-","_",$user->uuid);
-
-            $order = $this->payout->getBeneficiary($benId);
-            $order = json_decode($order,true);
-            $data['data'] = $order;
+            $Beneficiary = Beneficiary::where('ben_id',$benId)->first();
+            if(!$Beneficiary){
+                $order = $this->payout->getBeneficiary($benId);
+                $Beneficiary = json_decode($order,true);
+            }
+            $data['data'] = $Beneficiary;
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {

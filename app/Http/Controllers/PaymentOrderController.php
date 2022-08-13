@@ -172,7 +172,7 @@ class PaymentOrderController extends Controller
             $data = [];
             $data['beneId'] = "BEN".$user->uuid;
             $data['name'] = $user->name;
-            $data['email'] = $user->name;
+            $data['email'] = $user->email;
             $data['phone'] = $user->name;
             if($request->type == 'bank')
             {

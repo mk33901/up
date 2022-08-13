@@ -12,7 +12,7 @@ class Beneficiary extends Model
     use HasFactory, UuidTraits;
 
     protected $fillable = [
-        'bank_account','ifsc','address','city','state','pincode','cardNo','is_active','uuid'
+        'bank_account','ifsc','address','city','state','pincode','cardNo','is_active','uuid','ben_id'
     ];
 
     /**

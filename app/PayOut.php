@@ -27,7 +27,7 @@ class PayOut
             if($http->successful())
             {
                 $body = $http->json('data');
-                return $body->token;
+                return $body['token'];
             }
             return false;
         } catch (\Throwable $th) {
@@ -43,7 +43,7 @@ class PayOut
             {
                 return false;
             }
-            return $this->call($token)->post("$this->endUrl/payout/v1/getBeneficiary/$beneficiaryId");
+            return $this->call($token)->post("$this->endUrl/payout/v1/getBeneficiary/$beneficiaryId")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -66,7 +66,12 @@ class PayOut
     public function removeBeneficiary(array $data)
     {
         try {
-            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/payout/v1/removeBeneficiary");
+            $token = $this->authorize();
+            if(!$token)
+            {
+                return false;
+            }
+            return $this->call($token)->withBody(json_encode($data),'application/json')->post("$this->endUrl/payout/v1/removeBeneficiary")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -75,7 +80,12 @@ class PayOut
     public function requestAsyncTransfer(array $data)
     {
         try {
-            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/payout/v1/requestAsyncTransfer");
+            $token = $this->authorize();
+            if(!$token)
+            {
+                return false;
+            }
+            return $this->call($token)->withBody(json_encode($data),'application/json')->post("$this->endUrl/payout/v1/requestAsyncTransfer")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -89,7 +99,7 @@ class PayOut
             {
                 return false;
             }
-            return $this->call($token)->post("$this->endUrlpayout/v1/getTransferStatus?referenceId=$transactionId");
+            return $this->call($token)->post("$this->endUrlpayout/v1/getTransferStatus?referenceId=$transactionId")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }

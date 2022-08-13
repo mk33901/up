@@ -169,8 +169,9 @@ class PaymentOrderController extends Controller
     {
         try {
             $user = auth()->user();
+            $benId = "BEN".str_replace("-","_",$user->uuid);
             $data = [];
-            $data['beneId'] = "BEN".$user->uuid;
+            $data['beneId'] = $benId;;
             $data['name'] = $user->name;
             $data['email'] = $user->email;
             $data['phone'] = $user->name;
@@ -187,6 +188,7 @@ class PaymentOrderController extends Controller
             
             $order = json_decode($order,true);
             $Beneficiary = Beneficiary::create([
+                'ben_id' => $benId,
                 'bank_account' => $request->bank_account,
                 'ifsc' => $request->ifsc,
                 'address' => $request->address,

@@ -25,7 +25,7 @@ class Payment
     public function createPlan(array $data)
     {
         try {
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/api/v2/subscription-plans");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/api/v2/subscription-plans");
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -34,7 +34,7 @@ class Payment
     public function createSeamLessSubscription(array $data)
     {
         try {
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/api/v2/subscriptions");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/api/v2/subscriptions");
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -47,12 +47,12 @@ class Payment
             $data=[
                 "subscriptionId" =>"SUB".str_replace("-","_",$user->uuid),
                 "planId"=>"0100",
-                "customerEmail"=>$user->id,
+                "customerEmail"=>$user->email,
                 "customerPhone"=>"93465577484",
                 "expiresOn" =>Carbon::now()->addYears(1),
                 "returnUrl"=>url('/return')
             ];            
-            $http = $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/api/v2/subscriptions");
+            $http = $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/api/v2/subscriptions");
             if($http->successful())
             {
                 $data = $http->json();
@@ -95,7 +95,7 @@ class Payment
     {
         try {
             $subscriptionId = $data['subscriptionId'];
-            return $this->call()->withBody('application/json',json_encode($data))->post("$this->endUrl/api/v2/subscriptions/$subscriptionId/charge");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/api/v2/subscriptions/$subscriptionId/charge");
         } catch (\Throwable $th) {
             //throw $th;
         }

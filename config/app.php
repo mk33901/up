@@ -58,6 +58,11 @@ return [
     'appId' => env('PAY_APPID', null),
     'secret' => env('PAY_SECRET', null),
     'endUrl' => env('PAY_ENDURL', null),
+    'auto-collect'=>[
+        'appId' => env('AUTOPAY_APPID', null),
+        'secret' => env('AUTOPAY_SECRET', null),
+        'endUrl' => env('AUTOPAY_ENDURL', null),
+    ],
 
     /*
     |--------------------------------------------------------------------------

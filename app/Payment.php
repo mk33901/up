@@ -12,9 +12,9 @@ class Payment
     private string $secret;
     private string $endUrl;
     public function __construct() {
-        $this->appId = config('app.appId');
-        $this->secret = config('app.secret');
-        $this->endUrl = config('app.endUrl');
+        $this->appId = config('app.auto-collect.appId');
+        $this->secret = config('app.auto-collect.secret');
+        $this->endUrl = config('app.auto-collect.endUrl');
     }
 
     public function call()

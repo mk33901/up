@@ -11,16 +11,20 @@ use App\PayOut;
 use App\Models\Beneficiary;
 use App\Models\Contracts;
 use App\Models\PayoutTransaction;
+use App\Models\Subscription;
+use App\Payment;
 use Illuminate\Support\Str;
 
 class PaymentOrderController extends Controller
 {
     public PaymentOrderClass $paymentorder;
+    public Payment $payment;
     public PayOut $payout;
-    public function __construct(PaymentOrderClass $paymentorder,PayOut $payout)
+    public function __construct(PaymentOrderClass $paymentorder,PayOut $payout, Payment $payment)
     {
         $this->paymentorder = $paymentorder;
         $this->payout = $payout;
+        $this->payment = $payment;
     }
     /**
      * Display a listing of the resource.
@@ -257,6 +261,35 @@ class PaymentOrderController extends Controller
 
         } catch (\Throwable $th) {
             $data['message'] = $th->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
+    }
+
+    public function subscribe(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $response = $this->payment->createSubscription($user);
+            $response = json_decode($response,true);
+            $data['data'] = $response;
+            $data['message'] = 'done';
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
+    }
+
+    public function getPayment(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $response = Subscription::where('user_id',$user->id)->first();
+            $data['data'] = $response;
+            $data['message'] = 'done';
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
             return  $this->apiResponse($data, 404);
         }
     }

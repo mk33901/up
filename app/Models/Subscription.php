@@ -15,7 +15,7 @@ class Subscription extends Model
      *
      * @var array
      */
-    protected $fillable = ['subscription_id','ref_id','auth_link','user_id','status','expires_on','response'];
+    protected $fillable = ['subscription_id','ref_id','auth_link','user_id','status','expires_on','response','subscription'];
 
     /**
      * Get the user that owns the Subscription

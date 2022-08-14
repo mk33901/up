@@ -57,7 +57,7 @@ class Payment
             {
                 $data = $http->json();
                 $subscribe = Subscription::create([
-                    'subscription_id'=>"SUB".str_replace("-","_",$user->uuid),
+                    'subscription'=>"SUB".str_replace("-","_",$user->uuid),
                     'ref_id'=>$data['subReferenceId'],
                     'auth_link'=>$data['authLink'],
                     'user_id'=>$user->id,

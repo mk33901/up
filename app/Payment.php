@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use App\Models\Subscription;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class Payment
 {
@@ -43,9 +44,9 @@ class Payment
     public function createSubscription($user)
     {
         try {
-            
+            $subId = Str::uuid();
             $data=[
-                "subscriptionId" =>"SUB".str_replace("-","_",$user->uuid),
+                "subscriptionId" =>"SUB".$subId,
                 "planId"=>"0100",
                 "customerEmail"=>$user->email,
                 "customerPhone"=>"93465577484",
@@ -57,7 +58,8 @@ class Payment
             {
                 $data = $http->json();
                 $subscribe = Subscription::create([
-                    'subscription'=>"SUB".str_replace("-","_",$user->uuid),
+                    'subscription'=>"SUB".$subId,
+                    'subscription_id'=>$subId,
                     'ref_id'=>$data['subReferenceId'],
                     'auth_link'=>$data['authLink'],
                     'user_id'=>$user->id,

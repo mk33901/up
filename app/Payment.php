@@ -49,7 +49,7 @@ class Payment
                 "planId"=>"0100",
                 "customerEmail"=>$user->email,
                 "customerPhone"=>"93465577484",
-                "expiresOn" =>Carbon::now()->addYears(1),
+                "expiresOn" =>Carbon::now()->addYears(1)->format("Y-m-d H:i:s"),
                 "returnUrl"=>url('/return')
             ];            
             $http = $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/api/v2/subscriptions");
@@ -62,7 +62,7 @@ class Payment
                     'auth_link'=>$data['authLink'],
                     'user_id'=>$user->id,
                     'status'=>0,
-                    'expires_on'=>Carbon::now()->addYears(1),
+                    'expires_on'=>Carbon::now()->addYears(1)->format("Y-m-d H:i:s"),
                     'response'=>$http->body()
                 ]);
                 return $subscribe;

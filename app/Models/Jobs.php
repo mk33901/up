@@ -4,17 +4,18 @@ namespace App\Models;
 
 use App\Models\Client;
 use App\Models\Asssets;
+use App\Models\Proposals;
 use App\Traits\UuidTraits;
 use App\Models\JobBookmark;
 use App\Models\JobFeedback;
 use App\Models\JobQuestions;
 use App\Models\JobPreference;
+use App\Models\JobTransactions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Proposals;
 
 class Jobs extends Model
 {
@@ -145,5 +146,15 @@ class Jobs extends Model
     public function transaction(): HasMany
     {
         return $this->hasMany(Transactions::class);
+    }
+
+    /**
+     * Get all of the jobtransactions for the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function jobtransactions(): HasMany
+    {
+        return $this->hasMany(JobTransactions::class);
     }
 }

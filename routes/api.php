@@ -227,5 +227,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('widrow/save', 'WidrowController@store');
     Route::post('widrow/{id}/update', 'WidrowController@update');
     Route::post('widrow/{id}/remove', 'WidrowController@destroy');
+
+
+    Route::get('jobtransations', 'JobTransactionsController@index');
+    Route::post('jobtransations', 'JobTransactionsController@store');
+    Route::post('jobtransations/search', 'JobTransactionsController@search');
+    Route::post('jobtransations/{id}', 'JobTransactionsController@show');
+    Route::post('jobtransations/{id}/update', 'JobTransactionsController@update');
+    Route::post('jobtransations/{id}/remove', 'JobTransactionsController@destroy');
 });
 

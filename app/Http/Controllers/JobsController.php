@@ -289,7 +289,15 @@ class JobsController extends Controller
     public function client(Request $request)
     {
         try {
-            $jobs = Jobs::with('preference','proposal','invites')->where('user_id',auth()->user()->id)->paginate(8);
+            $user_id= ( auth()->user())? auth()->user()->id:0;
+            $page = (isset($_GET['page']) && $_GET['page'] > 0) ? intval($_GET['page']) : 1;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $offset = ($page > 1) ? ($per_page * ($page - 1)) : 0;
+            // $Jobs = Jobs::paginate($per_page);
+
+            $jobs = DB::select("CALL `getJobs`(".$user_id.", ".$offset.", ".$per_page.")");
             $data['data'] = $jobs;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);

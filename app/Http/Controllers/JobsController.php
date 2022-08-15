@@ -289,6 +289,7 @@ class JobsController extends Controller
     public function client(Request $request)
     {
         try {
+            $per_page = 8;
             $user_id= ( auth()->user())? auth()->user()->id:0;
             $page = (isset($_GET['page']) && $_GET['page'] > 0) ? intval($_GET['page']) : 1;
             if($request->per_page){

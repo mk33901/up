@@ -6,6 +6,7 @@ use App\Models\Proposals;
 use App\Traits\UuidTraits;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Contracts extends Model
@@ -46,5 +47,15 @@ class Contracts extends Model
     public function client(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'client_id');
+    }
+
+    /**
+     * Get all of the timeentry for the Contracts
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function timeentry(): HasMany
+    {
+        return $this->hasMany(TimeEntry::class);
     }
 }

@@ -56,6 +56,6 @@ class Contracts extends Model
      */
     public function timeentry(): HasMany
     {
-        return $this->hasMany(TimeEntry::class);
+        return $this->hasMany(TimeEntry::class, 'contract_id', 'id');
     }
 }

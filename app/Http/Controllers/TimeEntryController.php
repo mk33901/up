@@ -50,7 +50,9 @@ class TimeEntryController extends Controller
     public function store(Request $request)
     {
         try{
-            $TimeEntry = TimeEntry::create($request->except('_token'));
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $TimeEntry = TimeEntry::create($data);
             //$this->images($request,$TimeEntry);
             $data['data'] = $TimeEntry;
             $data['message'] = 'created';
@@ -93,8 +95,10 @@ class TimeEntryController extends Controller
     public function update(Request $request,$id)
     {
         try{
+            $data =$request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
             $TimeEntry = TimeEntry::find($id);
-            $TimeEntry->update($request->except(['_token','id','created_at','updated_at']));
+            $TimeEntry->update($data);
             //$this->images($request,$TimeEntry);
             $data['data'] = $TimeEntry;
             $data['message'] = 'update';

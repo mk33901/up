@@ -18,7 +18,7 @@ class TimeEntry extends Model
      *
      * @var array
      */
-    protected $fillable = ['uuid', 'user_id', 'job_id', 'start_time', 'end_time', 'duration','contract_id'];
+    protected $fillable = ['uuid', 'user_id', 'job_id', 'start_time', 'end_time', 'duration','contract_id','date'];
 
     /**
      * Get all of the attachment for the TimeEntry

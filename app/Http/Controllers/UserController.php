@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificate;
+use App\Models\Client;
 use App\Models\Education;
 use App\Models\Language;
 use App\Models\User;
@@ -238,6 +239,21 @@ class UserController extends Controller
             $data['data'] = $Jobs;
             $data['data']['questions'] = $questions;
             $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
+    public function profile(Request $request)
+    {
+        try{
+            $data = $request->except('_token');
+            $client = Client::where('user_id',auth()->user()->id)->first();
+            $client->update($data);
+            $data['data'] = $client;
+            $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
             $data['message'] = $e->getMessage();

@@ -180,6 +180,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('timeentry/attachment/{id}/remove', 'TimeEntryAttachmentController@destroy');
 
     Route::post('user/{id}', 'UserController@show');
+    Route::post('profile/{id}', 'UserController@profile');
     
     Route::post('invite', 'InvitesController@store');
     Route::post('contract', 'ContractsController@store');

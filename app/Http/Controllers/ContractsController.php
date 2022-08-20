@@ -164,4 +164,19 @@ class ContractsController extends Controller
             return  $this->apiResponse($data,404);
         }
     }
+
+    public function jobs(Request $request)
+    {
+        try {
+            $user = auth()->user();
+            $contract = Contracts::with('proposal','proposal.jobs')->where('user_id',$user->id)->get();
+         
+            $data['data'] = $contract;
+            $data['message'] = 'status updated';
+            return  $this->apiResponse($data,200);
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
 }

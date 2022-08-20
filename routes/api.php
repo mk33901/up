@@ -236,5 +236,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('jobtransations/{id}', 'JobTransactionsController@show');
     Route::post('jobtransations/{id}/update', 'JobTransactionsController@update');
     Route::post('jobtransations/{id}/remove', 'JobTransactionsController@destroy');
+
+    Route::get('get/jobs', 'ContractsController@jobs');
 });
 

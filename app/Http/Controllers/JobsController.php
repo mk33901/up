@@ -184,7 +184,7 @@ class JobsController extends Controller
     public function search(Request $request)
     {
         try{
-            $all = $request->all();
+            $all = $request->except('page');
             $Jobs = new Jobs();
             foreach($all as $k=>$a){
                 $Jobs = $Jobs->where($k,'like','%'.$a. '%');

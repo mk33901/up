@@ -102,7 +102,7 @@ class LanguageController extends Controller
             $Language = UserLanguage::find($id);
             $Language->update($data);
             //$this->images($request,$Language);
-            $data['data'] = new UserLanguageResource($Language);
+            $data['data'] = new UserLanguageResource($Language->load('language'));
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

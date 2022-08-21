@@ -6,6 +6,7 @@ use App\Models\Language;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\UserLanguage;
+use App\Http\Resources\UserLanguageResource;
 
 class LanguageController extends Controller
 {
@@ -55,7 +56,7 @@ class LanguageController extends Controller
             $data['user_id'] = auth()->user()->id;
             $Language = UserLanguage::create($data);
             //$this->images($request,$Language);
-            $data['data'] = $Language;
+            $data['data'] = new UserLanguageResource($Language);
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -101,7 +102,7 @@ class LanguageController extends Controller
             $Language = UserLanguage::find($id);
             $Language->update($data);
             //$this->images($request,$Language);
-            $data['data'] = $Language;
+            $data['data'] = new UserLanguageResource($Language);
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

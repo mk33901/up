@@ -22,7 +22,7 @@ class PortfolioController extends Controller
             }
             $Portfolio = Portfolio::paginate($per_page);
          
-            $data['data'] = $Portfolio;
+            $data['data'] = PortfolioResource::collection($Portfolio);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -54,7 +54,7 @@ class PortfolioController extends Controller
             $data['user_id'] = auth()->user()->id;
             $Portfolio = Portfolio::create($data);
             $this->assets($Portfolio,'files',$request->all());
-            $data['data'] = $Portfolio;
+            $data['data'] = new PortfolioResource($Portfolio);
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -100,7 +100,7 @@ class PortfolioController extends Controller
             $Portfolio = Portfolio::find($id);
             $Portfolio->update($data);
             $this->assets($Portfolio,'files',$request->all());
-            $data['data'] = $Portfolio;
+            $data['data'] = new PortfolioResource($Portfolio);
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -129,7 +129,7 @@ class PortfolioController extends Controller
                 $Portfolio = $Portfolio->where($k,'like','%'.$a. '%');
             }
             $Portfolio =$Portfolio->paginate(8);
-            $data['data'] =  $Portfolio;
+            $data['data'] =  PortfolioResource::collection($Portfolio);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

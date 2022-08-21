@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Expirence;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ExpirenceResource;
 
 class ExpirenceController extends Controller
 {
@@ -22,7 +23,7 @@ class ExpirenceController extends Controller
             }
             $Expirence = Expirence::paginate($per_page);
 
-            $data['data'] = $Expirence;
+            $data['data'] = ExpirenceResource::collection($Expirence);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -54,7 +55,7 @@ class ExpirenceController extends Controller
             $data['user_id'] = auth()->user()->id;
             $Expirence = Expirence::create($data);
             //$this->images($request,$Expirence);
-            $data['data'] = $Expirence;
+            $data['data'] = new ExpirenceResource($Expirence);
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -100,7 +101,7 @@ class ExpirenceController extends Controller
             $Expirence = Expirence::find($id);
             $Expirence->update($data);
             //$this->images($request,$Expirence);
-            $data['data'] = $Expirence;
+            $data['data'] = new ExpirenceResource($Expirence);
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -129,7 +130,7 @@ class ExpirenceController extends Controller
                 $Expirence = $Expirence->where($k,'like','%'.$a. '%');
             }
             $Expirence =$Expirence->paginate(8);
-            $data['data'] =  $Expirence;
+            $data['data'] =  ExpirenceResource::collection($Expirence);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

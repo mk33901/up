@@ -22,7 +22,7 @@ class UserEducationController extends Controller
             }
             $UserEducation = UserEducation::paginate($per_page);
 
-            $data['data'] = $UserEducation;
+            $data['data'] = UserEducationResource::collection($UserEducation);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -54,7 +54,7 @@ class UserEducationController extends Controller
             $data['user_id'] = auth()->user()->id;
             $UserEducation = UserEducation::create($data);
             //$this->images($request,$UserEducation);
-            $data['data'] = $UserEducation;
+            $data['data'] = new UserEducationResource($UserEducation);
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -100,7 +100,7 @@ class UserEducationController extends Controller
             $UserEducation = UserEducation::find($id);
             $UserEducation->update($data);
             //$this->images($request,$UserEducation);
-            $data['data'] = $UserEducation;
+            $data['data'] = new UserEducationResource($UserEducation);
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -129,7 +129,7 @@ class UserEducationController extends Controller
                 $UserEducation = $UserEducation->where($k,'like','%'.$a. '%');
             }
             $UserEducation =$UserEducation->paginate(8);
-            $data['data'] =  $UserEducation;
+            $data['data'] =  UserEducationResource::collection($UserEducation);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

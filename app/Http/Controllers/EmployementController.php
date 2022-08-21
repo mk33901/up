@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employement;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\EmployementResource;
 
 class EmployementController extends Controller
 {
@@ -22,7 +23,7 @@ class EmployementController extends Controller
             }
             $Employement = Employement::paginate($per_page);
 
-            $data['data'] = $Employement;
+            $data['data'] = EmployementResource::collection($Employement);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -54,7 +55,7 @@ class EmployementController extends Controller
             $data['user_id'] = auth()->user()->id;
             $Employement = Employement::create($data);
             //$this->images($request,$Employement);
-            $data['data'] = $Employement;
+            $data['data'] = new EmployementResource($Employement);
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -100,7 +101,7 @@ class EmployementController extends Controller
             $Employement = Employement::find($id);
             $Employement->update($data);
             //$this->images($request,$Employement);
-            $data['data'] = $Employement;
+            $data['data'] = new EmployementResource($Employement);
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -129,7 +130,7 @@ class EmployementController extends Controller
                 $Employement = $Employement->where($k,'like','%'.$a. '%');
             }
             $Employement =$Employement->paginate(8);
-            $data['data'] =  $Employement;
+            $data['data'] =  EmployementResource::collection($Employement);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

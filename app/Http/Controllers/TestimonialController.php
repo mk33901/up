@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Testimonial;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TestimonialResource;
 
 class TestimonialController extends Controller
 {
@@ -22,7 +23,7 @@ class TestimonialController extends Controller
             }
             $Testimonial = Testimonial::paginate($per_page);
 
-            $data['data'] = $Testimonial;
+            $data['data'] = TestimonialResource::collection($Testimonial);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -54,7 +55,7 @@ class TestimonialController extends Controller
             $data['user_id'] = auth()->user()->id;
             $Testimonial = Testimonial::create($data);
             //$this->images($request,$Testimonial);
-            $data['data'] = $Testimonial;
+            $data['data'] = new TestimonialResource($Testimonial);
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -100,7 +101,7 @@ class TestimonialController extends Controller
             $Testimonial = Testimonial::find($id);
             $Testimonial->update($data);
             //$this->images($request,$Testimonial);
-            $data['data'] = $Testimonial;
+            $data['data'] = new TestimonialResource($Testimonial);
             $data['message'] = 'update';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -129,7 +130,7 @@ class TestimonialController extends Controller
                 $Testimonial = $Testimonial->where($k,'like','%'.$a. '%');
             }
             $Testimonial =$Testimonial->paginate(8);
-            $data['data'] =  $Testimonial;
+            $data['data'] =  TestimonialResource::collection($Testimonial);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

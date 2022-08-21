@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class UserLanguageResource extends ResourceCollection
+class UserResource extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -14,9 +14,6 @@ class UserLanguageResource extends ResourceCollection
      */
     public function toArray($request)
     {
-        return [
-            'language_id' => $this->language->name,
-            'level' => $this->level,
-        ];
+        return parent::toArray($request);
     }
 }

@@ -27,4 +27,14 @@ class UserLanguage extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the language that owns the UserLanguage
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function language(): BelongsTo
+    {
+        return $this->belongsTo(Language::class);
+    }
 }

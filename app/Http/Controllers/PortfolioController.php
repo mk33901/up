@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PortfolioResource;
 
 class PortfolioController extends Controller
 {
@@ -20,7 +21,7 @@ class PortfolioController extends Controller
             if($request->per_page){
                 $per_page=$request->per_page;
             }
-            $Portfolio = Portfolio::paginate($per_page);
+            $Portfolio = Portfolio::with('assets')->paginate($per_page);
          
             $data['data'] = PortfolioResource::collection($Portfolio);
             $data['message'] = 'block';

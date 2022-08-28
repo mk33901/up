@@ -16,5 +16,15 @@ class Asssets extends Model
      * @var array
      */
     protected $fillable = ['uuid','name','path','type'];
+    
+    /**
+     * Get the taggable that owns the Asssets
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function taggable()
+    {
+        return $this->morphTo();
+    }
 
 }

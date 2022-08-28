@@ -70,7 +70,7 @@ class UserController extends Controller
             $language = Language::all();
             $education = Education::all();
             $certificate = Certificate::all();
-            $user = User::with('preference', 'language', 'education', 'testimonial', 'employement', 'expirence', 'portfolio')->find($id);
+            $user = User::with('preference', 'language', 'education', 'testimonial', 'employement', 'expirence', 'portfolio','portfolio.assets')->find($id);
             $data['data']['user'] = $user;
             $data['data']['education'] = $education;
             $data['data']['certificate'] = $certificate;

@@ -31,6 +31,16 @@ class PaymentOrder
         }
     }
 
+    public function autherizePayOrder(array $data)
+    {
+        try {
+            $data = $this->generateOrder($data,"auth");
+            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/pg/orders")->body();
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
     public function payOrder(array $data)
     {
         try {
@@ -59,7 +69,7 @@ class PaymentOrder
         }
     }
 
-    public function generatePay($data)
+    public function generatePay($data, $type='normal')
     {
         $newData = [];
         if(isset($data['card']))
@@ -79,6 +89,8 @@ class PaymentOrder
             "card_cvv"=> $card["card_cvv"],
             "card_display"=> $card["card_display"]
         ];
+        
+        $newData["order_tags"]["type"]=$type;
         $newData["payment_method"]["card"]=$card;
         return $newData;
 
@@ -94,7 +106,7 @@ class PaymentOrder
         {
             $order = $data['order'];
         }
-        $orderId = $order->uuid;
+        $orderId = $order->uuid.Date('His');
         if(isset($data['type']))
         {
             $orderId = $data['type']."-".$orderId;
@@ -107,7 +119,7 @@ class PaymentOrder
         $newData['order_currency'] = "INR";
         $newData['order_meta']['return_url'] = url('/')."?order_id={order_id}&order_token={order_token}";
         $newData['order_meta']['notify_url'] = url('/')."?order_id={order_id}&order_token={order_token}";
-        $newData['order_expiry_time'] = "2022-08-01T11:09:51Z";
+        $newData['order_expiry_time'] = Carbon::now()->addMinutes(20)->toIso8601String();
         return $newData;
     }
 }

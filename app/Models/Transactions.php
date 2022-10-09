@@ -26,6 +26,7 @@ class Transactions extends Model
         'order_token',
         'payment_response',
         'amount',
+        'type',
     ];
 
     /**

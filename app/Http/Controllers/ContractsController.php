@@ -80,6 +80,43 @@ class ContractsController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function authorizePayment(Request $request)
+    {
+        try{
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $contracts = Contracts::create($data);
+
+            $orderData = [];
+            $orderData['user'] = auth()->user();
+            $orderData['order'] = $contracts;
+            $orderData['type'] = "contract";
+            $order = New PaymentOrder();
+            $response = $order->autherizePayOrder($orderData);
+            $responseData = json_decode($response,true);
+            $transactions = Transactions::create([
+                'user_id' => auth()->user()->id,
+                'status' =>'pending',
+                'type' =>'auth',
+                'transaction_date' => Carbon::now()->format("Y-m-d"),
+                'payment_type'=> 'contract-'.$contracts->uuid
+            ]);
+            //$this->images($request,$contracts);
+            $data['data'] = (isset($responseData)?$responseData['payment_link']:"");
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\Contracts  $contracts

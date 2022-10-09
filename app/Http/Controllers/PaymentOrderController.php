@@ -112,16 +112,24 @@ class PaymentOrderController extends Controller
             $order = New PaymentOrder();
             $response = $order->autherizePayOrder($orderData);
             $responseData = json_decode($response,true);
+            if(!isset($responseData['order_id']))
+            {
+                $data['message'] = "Auth Fail";
+                return  $this->apiResponse($data,404);
+            }
             $transactions = Transactions::create([
                 'user_id' => $user->id,
                 'status' =>'pending',
                 'response' =>$response,
+                'order_id' =>$responseData['order_id'],
+                'order_token' =>$responseData['order_token'],
+                'amount' =>$responseData['order_amount'],
                 'type' =>'auth',
                 'transaction_date' => Carbon::now()->format("Y-m-d"),
                 'payment_type'=> 'contract-'.$user->uuid
             ]);
             //$this->images($request,$contracts);
-            $data['transactions'] = $transactions;
+            $data['transactions'] = $transactions->id;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

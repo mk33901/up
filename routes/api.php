@@ -211,6 +211,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     Route::get('payment/order', 'PaymentOrderController@index');
     Route::post('payment/order', 'PaymentOrderController@store');
+    Route::post('payment/auth', 'PaymentOrderController@authorizePayment');
     Route::post('payment/pay', 'PaymentOrderController@pay');
     Route::post('payment/order/search', 'PaymentOrderController@search');
     Route::post('payment/order/{id}', 'PaymentOrderController@show');

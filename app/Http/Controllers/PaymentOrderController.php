@@ -87,10 +87,47 @@ class PaymentOrderController extends Controller
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {
-            $data['message'] = $e->getMessage();
+            $data['message'] = $e->getMessage()." ".$e->getLine()." ".$e->getFile();
             return  $this->apiResponse($data, 404);
         }
     }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function authorizePayment(Request $request)
+    {
+        try{
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+
+            $orderData = [];
+            $orderData['user'] = auth()->user();
+            $orderData['order'] = auth()->user();
+            $orderData['type'] = "contract";
+            $order = New PaymentOrder();
+            $response = $order->autherizePayOrder($orderData);
+            $responseData = json_decode($response,true);
+            $transactions = Transactions::create([
+                'user_id' => auth()->user()->id,
+                'status' =>'pending',
+                'type' =>'auth',
+                'transaction_date' => Carbon::now()->format("Y-m-d"),
+                'payment_type'=> 'contract-'.auth()->user()->uuid
+            ]);
+            //$this->images($request,$contracts);
+            $data['data'] = (isset($responseData)?$responseData['payment_link']:"");
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
 
     /**
      * Display the specified resource.

@@ -207,7 +207,13 @@ class PaymentOrderController extends Controller
             $data['order_token'] = $transactions->order_token;
             $data['card'] = $card;
             $order = $this->paymentorder->payOrder($data);
-            $data['data'] = $order;
+            $order = json_decode($order,true);
+            if(!isset($order['data']))
+            {
+                $data['message'] = "order not found";
+                return  $this->apiResponse($data, 404); 
+            }
+            $data['data'] = $order['data'];
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {

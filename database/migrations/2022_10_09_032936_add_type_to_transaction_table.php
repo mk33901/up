@@ -13,7 +13,7 @@ class AddTypeToTransactionTable extends Migration
      */
     public function up()
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::table('transactions', function (Blueprint $table) {
             $table->enum('type', ['auth', 'normal'])->default('normal');
         });
     }

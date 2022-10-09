@@ -239,5 +239,6 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('jobtransations/{id}/remove', 'JobTransactionsController@destroy');
 
     Route::get('get/jobs', 'ContractsController@jobs');
+    Route::get('store/card', 'PaymentOrderController@hook');
 });
 

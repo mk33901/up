@@ -346,4 +346,14 @@ class PaymentOrderController extends Controller
             return  $this->apiResponse($data, 404);
         }
     }
+
+    public function hook(Request $request)
+    {
+        try {
+           dd($request->all());
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
+    }
 }

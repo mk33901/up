@@ -108,13 +108,14 @@ class PaymentOrderController extends Controller
             $orderData = [];
             $orderData['user'] = $user;
             $orderData['order'] = $user;
-            $orderData['type'] = "contract";
+            $orderData['type'] = "auth";
             $order = New PaymentOrder();
             $response = $order->autherizePayOrder($orderData);
             $responseData = json_decode($response,true);
             $transactions = Transactions::create([
                 'user_id' => $user->id,
                 'status' =>'pending',
+                'response' =>$response,
                 'type' =>'auth',
                 'transaction_date' => Carbon::now()->format("Y-m-d"),
                 'payment_type'=> 'contract-'.$user->uuid

@@ -106,7 +106,7 @@ class PaymentOrder
         {
             $order = $data['order'];
         }
-        $orderId = $order->uuid.Date('His');
+        $orderId = $order->uuid.Date('Hi');
         if(isset($data['type']))
         {
             $orderId = $data['type']."-".$orderId;

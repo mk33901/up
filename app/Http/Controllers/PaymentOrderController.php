@@ -102,24 +102,25 @@ class PaymentOrderController extends Controller
     {
         try{
             $data = $request->except('_token');
-            $data['user_id'] = auth()->user()->id;
-
+            $user = auth()->user();
+            $data['user_id'] = $user->id;
+            $user->price = '1';
             $orderData = [];
-            $orderData['user'] = auth()->user();
-            $orderData['order'] = auth()->user();
+            $orderData['user'] = $user;
+            $orderData['order'] = $user;
             $orderData['type'] = "contract";
             $order = New PaymentOrder();
             $response = $order->autherizePayOrder($orderData);
             $responseData = json_decode($response,true);
             $transactions = Transactions::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => $user->id,
                 'status' =>'pending',
                 'type' =>'auth',
                 'transaction_date' => Carbon::now()->format("Y-m-d"),
-                'payment_type'=> 'contract-'.auth()->user()->uuid
+                'payment_type'=> 'contract-'.$user->uuid
             ]);
             //$this->images($request,$contracts);
-            $data['data'] = (isset($responseData)?$responseData['payment_link']:"");
+            $data['transactions'] = $transactions;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){

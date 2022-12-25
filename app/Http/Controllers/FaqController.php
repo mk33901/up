@@ -14,7 +14,17 @@ class FaqController extends Controller
      */
     public function index()
     {
-        //
+        
+        try{
+            $Faq = Faq::all();
+
+            $data['data'] = $Faq;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

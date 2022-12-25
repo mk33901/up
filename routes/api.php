@@ -33,6 +33,7 @@ Route::get('store/card', 'PaymentOrderController@hook');
 
 Route::post('jobs/getData', 'JobsController@create');
 Route::post('validate', 'UserController@validateUser');
+Route::get('faq', 'FaqController@index');
 Route::group(['middleware' => 'auth:api'], function() {
 
 

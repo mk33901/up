@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UserEducation;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserEducationResource;
 
 class UserEducationController extends Controller
 {

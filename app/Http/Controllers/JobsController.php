@@ -12,6 +12,8 @@ use App\Models\Specialization;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateJobRequest;
+use App\Http\Resources\JobResource;
+use App\Models\Invites;
 use App\Models\JobQuestions;
 use App\Models\User;
 use App\Models\Proposals;
@@ -88,6 +90,8 @@ class JobsController extends Controller
             $Jobs = Jobs::create($data);
             $jobPref = JobPreference::create($request->except('_token','title', 'description', 'category_id', 'speciality_id', 'edit_scope', 'time', 'level_experience', 'user_id', 'client_id', 'budget'));
             //$this->images($request,$Jobs);
+            $jobPref->job_id = $Jobs->id;
+            $jobPref->save();
             $data['data'] = $Jobs;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -108,7 +112,7 @@ class JobsController extends Controller
         try{
             $user_id= ( auth()->user())? auth()->user()->id:0;
             $Jobs = DB::select("SELECT
-            jobs.*,
+            jobs.*,get_hexa_coin(jobs.budget) as hexa_coin,
             categories.name as categories,
             specializations.name as specializations,
             job_preferences.job_id,job_preferences.english_level,job_preferences.hours_per_week,job_preferences.hire_date,job_preferences.no_of_professionals,job_preferences.type_of_talent,job_preferences.location,
@@ -125,9 +129,16 @@ class JobsController extends Controller
         join clients ON
             clients.id=jobs.client_id
             left join job_bookmarks on  job_bookmarks.job_id=jobs.id and job_bookmarks.user_id=".$user_id."
-             where jobs.id='".$id."'");
-            $questions = JobQuestions::where('job_id',$id)->get();
+             where jobs.uuid='".$id."'");
+             $questions=[];
+             if(count($Jobs))
+             {
+
+                //  $questions = JobQuestions::where('job_id',$Jobs[0])->get();
+             }
+             
             $data['data'] = $Jobs;
+            $data['id'] = $Jobs[0]->id;
             $data['data']['questions'] = $questions;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
@@ -187,7 +198,7 @@ class JobsController extends Controller
             $all = $request->except('page');
             $Jobs = new Jobs();
             foreach($all as $k=>$a){
-                $Jobs = $Jobs->where($k,'like','%'.$a. '%');
+                // $Jobs = $Jobs->where($k,'like','%'.$a. '%');
             }
             $Jobs =$Jobs->paginate(8);
             $data['data'] =  $Jobs;
@@ -237,8 +248,8 @@ class JobsController extends Controller
     public function detail(Request $request,$id)
     {
         try{
-            $Jobs = Jobs::with('preference','proposal','invites')->find($id);
-            $data['data'] = $Jobs;
+            $Jobs = Jobs::with('preference','proposal','invites','proposal.contracts')->where('uuid',$id)->first();
+            $data['data'] = new JobResource($Jobs) ;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -262,9 +273,17 @@ class JobsController extends Controller
     public function loadusers(Request $request,$id)
     {
         try {
-            $Jobs = DB::select("
-            SELECT users.*,proposals.id as pid,proposals.hired,proposals.messaged,proposals.shortlisted,proposals.description,proposals.created_at,proposals.rate,'0' as invited  FROM `proposals` left join users on users.id=proposals.user_id  WHERE `job_id` = ".$id." and proposals.deleted_at is null union  SELECT users.*,'0' as hired,'0' as messaged,'0' as shortlisted,'0' as description,invites.created_at,0 as rate,'1' as invited,invites.status as inviteStatus   FROM `invites` left join users on users.id=invites.user_id WHERE `job_id` = ".$id."");
-            $data['data'] = $Jobs;
+            $jobDetail = Jobs::where('uuid',$id)->first();
+            if(!$jobDetail)
+            {
+                $data['message'] = "No Job Found";
+                return  $this->apiResponse($data,404);
+            }
+            $proposal = Proposals::with('contracts','contracts.transactions')->select('users.id as userId','users.name','users.email','users.email_verified_at','users.password','users.remember_token','users.created_at','users.updated_at','users.profile','users.cover','users.uuid','proposals.id','proposals.hired','proposals.messaged','proposals.shortlisted','proposals.description','proposals.rate',DB::raw("'0' as invited"),'proposals.status as inviteStatus')->leftjoin('users','users.id','=','proposals.user_id')->whereJobId($jobDetail->id)->get();
+            // $Jobs = Invites::select('users.id as userId','users.name','users.email','users.email_verified_at','users.password','users.remember_token','users.created_at','users.updated_at','users.profile','users.cover','users.uuid','invites.id',DB::raw("'0' as hired"),DB::raw("'0' as messaged"),DB::raw("'0' as shortlisted"),DB::raw("'0' as description"),DB::raw("'0' as rate"),DB::raw("'1' as invited"),'invites.status as inviteStatus')->leftjoin('users','users.id','=','invites.user_id')->whereJobId($jobDetail->id)->union($proposal)->get ();
+            $users = User::with('invites')->limit(10)->get();
+            $data['data'] = $proposal;
+            $data['users'] = $users;
             $data['message'] = 'done';
             return  $this->apiResponse($data,200);
         } catch (\Exception $e) {

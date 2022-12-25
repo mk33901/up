@@ -11,9 +11,9 @@ class PaymentOrder
     private string $secret;
     private string $endUrl;
     public function __construct() {
-        $this->appId = config('app.appId');
-        $this->secret = config('app.secret');
-        $this->endUrl = config('app.endUrl');
+        $this->appId = "177035df0c202b657b6d5f001c530771";
+        $this->secret = "9ddf3b4151e4711778e7a9b0493e526b87cea5d3";
+        $this->endUrl = "https://sandbox.cashfree.com";
     }
 
     public function call()
@@ -45,8 +45,11 @@ class PaymentOrder
     {
         try {
             $data = $this->generatePay($data);
+            \Log::info($data);
             return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/pg/orders/pay")->body();
         } catch (\Throwable $th) {
+            \Log::info($th);
+            return $th;
             //throw $th;
         }
     }
@@ -63,7 +66,7 @@ class PaymentOrder
     public function getSavedCard(array $data,$customer_id)
     {
         try {
-            return $this->call()->withBody(json_encode($data),'application/json')->post("$this->endUrl/pg/customers/$customer_id/instruments")->body();
+            return $this->call()->withBody(json_encode($data),'application/json')->get("$this->endUrl/pg/customers/$customer_id/instruments?instrument_type=card")->body();
         } catch (\Throwable $th) {
             //throw $th;
         }
@@ -78,17 +81,18 @@ class PaymentOrder
         }
         $newData['order_token'] = $data['order_token'];
         $newData['save_instrument'] = true;
-
-        $card =
-        [
-            "channel"=> "post",
-            "card_number"=> $card["card_number"],
-            "card_holder_name"=> $card["card_holder_name"],
-            "card_expiry_mm"=> $card["card_expiry_mm"],
-            "card_expiry_yy"=> $card["card_expiry_yy"],
-            "card_cvv"=> $card["card_cvv"],
-            "card_display"=> $card["card_display"]
-        ];
+        $card['channel'] = 'link';
+        $card['card_cvv'] = '123';
+        // $card =
+        // [
+        //     "channel"=> "link",
+        //     "card_number"=> $card["card_number"],
+        //     "card_holder_name"=> $card["card_holder_name"],
+        //     "card_expiry_mm"=> $card["card_expiry_mm"],
+        //     "card_expiry_yy"=> $card["card_expiry_yy"],
+        //     "card_cvv"=> $card["card_cvv"],
+        //     "card_display"=> $card["card_display"]
+        // ];
         
         $newData["order_tags"]["type"]=$type;
         $newData["payment_method"]["card"]=$card;
@@ -117,8 +121,8 @@ class PaymentOrder
         $newData['order_id'] = $orderId;
         $newData['order_amount'] = (int)$order->price;
         $newData['order_currency'] = "INR";
-        $newData['order_meta']['return_url'] = url('/')."?order_id={order_id}&order_token={order_token}";
-        $newData['order_meta']['notify_url'] = url('/')."?order_id={order_id}&order_token={order_token}";
+        $newData['order_meta']['return_url'] = url('/api/store/card')."?order_id={order_id}&order_token={order_token}";
+        $newData['order_meta']['notify_url'] = url('/api/store/card')."?order_id={order_id}&order_token={order_token}";
         $newData['order_expiry_time'] = Carbon::now()->addMinutes(20)->toIso8601String();
         return $newData;
     }

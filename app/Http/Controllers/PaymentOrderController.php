@@ -13,6 +13,7 @@ use App\Models\Subscription;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
 use App\Models\PayoutTransaction;
+use App\Models\Transations;
 use App\PaymentOrder as PaymentOrderClass;
 
 class PaymentOrderController extends Controller
@@ -20,7 +21,7 @@ class PaymentOrderController extends Controller
     public PaymentOrderClass $paymentorder;
     public Payment $payment;
     public PayOut $payout;
-    public function __construct(PaymentOrderClass $paymentorder,PayOut $payout, Payment $payment)
+    public function __construct(PaymentOrderClass $paymentorder, PayOut $payout, Payment $payment)
     {
         $this->paymentorder = $paymentorder;
         $this->payout = $payout;
@@ -36,7 +37,7 @@ class PaymentOrderController extends Controller
         try {
             $users = auth()->user();
             $cards = $this->paymentorder->getSavedCard([], $users->uuid);
-            $data['data'] = $cards;
+            $data['data'] = json_decode($cards, true);
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {
@@ -87,12 +88,12 @@ class PaymentOrderController extends Controller
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {
-            $data['message'] = $e->getMessage()." ".$e->getLine()." ".$e->getFile();
+            $data['message'] = $e->getMessage() . " " . $e->getLine() . " " . $e->getFile();
             return  $this->apiResponse($data, 404);
         }
     }
 
-     /**
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -100,7 +101,7 @@ class PaymentOrderController extends Controller
      */
     public function authorizePayment(Request $request)
     {
-        try{
+        try {
             $data = $request->except('_token');
             $user = auth()->user();
             $data['user_id'] = $user->id;
@@ -109,32 +110,35 @@ class PaymentOrderController extends Controller
             $orderData['user'] = $user;
             $orderData['order'] = $user;
             $orderData['type'] = "auth";
-            $order = New PaymentOrder();
+            $order = new PaymentOrder();
             $response = $order->autherizePayOrder($orderData);
-            $responseData = json_decode($response,true);
-            if(!isset($responseData['order_id']))
-            {
+            $responseData = json_decode($response, true);
+            if (!isset($responseData['order_id'])) {
                 $data['message'] = "Auth Fail";
-                return  $this->apiResponse($data,404);
+                return  $this->apiResponse($data, 404);
             }
-            $transactions = Transactions::create([
-                'user_id' => $user->id,
-                'status' =>'pending',
-                'response' =>$response,
-                'order_id' =>$responseData['order_id'],
-                'order_token' =>$responseData['order_token'],
-                'amount' =>$responseData['order_amount'],
-                'type' =>'auth',
-                'transaction_date' => Carbon::now()->format("Y-m-d"),
-                'payment_type'=> 'contract-'.$user->uuid
-            ]);
+            $transactions = Transactions::find(9);
+            // $transactions = Transactions::create([
+            //     'user_id' => $user->id,
+            //     'status' => 'pending',
+            //     'response' => $response,
+            //     'order_id' => $responseData['order_id'],
+            //     'order_token' => $responseData['order_token'],
+            //     'amount' => $responseData['order_amount'],
+            //     'type' => 'auth',
+            //     'transaction_date' => Carbon::now()->format("Y-m-d"),
+            //     'payment_type' => 'contract-' . $user->uuid,
+            //     'model_type'=> get_class(new Transations())
+            // ]);
+            // $transactions->model_id = $transactions->id;
+            // $transactions->save();
             //$this->images($request,$contracts);
             $data['transactions'] = $transactions->id;
             $data['message'] = 'created';
-            return  $this->apiResponse($data,200);
-        }catch(\Exception $e){
+            return  $this->apiResponse($data, 200);
+        } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
-            return  $this->apiResponse($data,404);
+            return  $this->apiResponse($data, 404);
         }
     }
 
@@ -188,30 +192,38 @@ class PaymentOrderController extends Controller
     {
         try {
             $user = auth()->user();
-            $transactions = Transactions::where('id', $request->id)->first();
+            $transactions = Transactions::where('model_id', $request->id)->orderBy('id','desc')->first();
             if (!$transactions) {
-                $data['message'] = "order not found";
+                $data['message'] = "order not1 found";
                 return  $this->apiResponse($data, 404);
             }
             $postData = $request->all();
             $data = [];
-            $card =
-                [
-                    "card_number" => $postData["card_number"],
-                    "card_holder_name" => $postData["card_holder_name"],
-                    "card_expiry_mm" => $postData["card_expiry_mm"],
-                    "card_expiry_yy" => $postData["card_expiry_yy"],
-                    "card_cvv" => $postData["card_cvv"],
-                    "card_display" => $postData["card_display"]
-                ];
+            if (!$request->card_saved) {
+                $card =
+                    [
+                        "card_number" => $postData["card_number"],
+                        "card_holder_name" => $postData["card_holder_name"],
+                        "card_expiry_mm" => $postData["card_expiry_mm"],
+                        "card_expiry_yy" => $postData["card_expiry_yy"],
+                        "card_cvv" => $postData["card_cvv"],
+                        "card_display" => $postData["card_display"]
+                    ];
+            }
+            if ($request->card_saved) {
+                $card =
+                    [
+                        "instrument_id" => $postData["instrument_id"],
+                    ];
+            }
             $data['order_token'] = $transactions->order_token;
             $data['card'] = $card;
             $order = $this->paymentorder->payOrder($data);
-            $order = json_decode($order,true);
-            if(!isset($order['data']))
-            {
+            \Log::info($order);
+            $order = json_decode($order, true);
+            if (!isset($order['data'])) {
                 $data['message'] = "order not found";
-                return  $this->apiResponse($data, 404); 
+                return  $this->apiResponse($data, 404);
             }
             $data['data'] = $order['data'];
             $data['message'] = 'done';
@@ -226,11 +238,11 @@ class PaymentOrderController extends Controller
     {
         try {
             $user = auth()->user();
-            $benId = "BEN".str_replace("-","_",$user->uuid);
-            $Beneficiary = Beneficiary::where('ben_id',$benId)->first();
-            if(!$Beneficiary){
+            $benId = "BEN" . str_replace("-", "_", $user->uuid);
+            $Beneficiary = Beneficiary::where('ben_id', $benId)->first();
+            if (!$Beneficiary) {
                 $order = $this->payout->getBeneficiary($benId);
-                $Beneficiary = json_decode($order,true);
+                $Beneficiary = json_decode($order, true);
             }
             $data['data'] = $Beneficiary;
             $data['message'] = 'done';
@@ -244,24 +256,29 @@ class PaymentOrderController extends Controller
     {
         try {
             $user = auth()->user();
-            $benId = "BEN".str_replace("-","_",$user->uuid);
+            $benId = "BEN" . str_replace("-", "_", $user->uuid);
             $data = [];
             $data['beneId'] = $benId;;
             $data['name'] = $user->name;
             $data['email'] = $user->email;
-            $data['phone'] = $user->name;
-            if($request->type == 'bank')
-            {
+            $data['phone'] = "918888888888";
+            if ($request->type == 'bank') {
                 $data['bankAccount'] = $request->bank_account;
                 $data['ifsc'] = $request->ifsc;
                 $data['address1'] = $request->address;
-            }else if($request->type == 'card')
-            {
+            } else if ($request->type == 'card') {
                 $data['cardNo'] = $request->card_no;
             }
             $order = $this->payout->addBeneficiary($data);
-            
-            $order = json_decode($order,true);
+            \Log::info($order);
+            $orderResponse = json_decode($order, true);
+            if ($orderResponse['status'] == 'ERROR') {
+                $data = [];
+                $data['status'] = false;
+                $data['data'] = $orderResponse;
+                $data['message'] = 'done';
+                return  $this->apiResponse($data, 422);
+            }
             $Beneficiary = Beneficiary::create([
                 'ben_id' => $benId,
                 'bank_account' => $request->bank_account,
@@ -271,15 +288,16 @@ class PaymentOrderController extends Controller
                 'state' => "",
                 'pincode' => "",
                 'cardNo' => $request->card,
-                'is_active' => ($order['subCode']== 200)?true:false,
-                'response_status' => $order['subCode'], 
-                'response' => json_encode($order)
+                'is_active' => ($orderResponse['subCode'] == 200) ? true : false,
+                'response_status' => $orderResponse['subCode'],
+                'response' => $order
             ]);
+            $data = [];
             $data['data'] = $order['message'];
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
         } catch (\Exception $e) {
-            $data['message'] = $e->getMessage();
+            $data['message'] = $e->getMessage()." ".$e->getFile()." ".$e->getLine();
             return  $this->apiResponse($data, 404);
         }
     }
@@ -291,27 +309,25 @@ class PaymentOrderController extends Controller
             $user = auth()->user();
             $data = [];
             $requestBank = $request->ben_id;
-            $Beneficiary = Beneficiary::where('uuid',$requestBank)->first();
+            $Beneficiary = Beneficiary::where('uuid', $requestBank)->first();
             $Contract = Contracts::find($request->id);
-            if(!$Beneficiary)
-            {
+            if (!$Beneficiary) {
                 $data['message'] = "Beneficiary not found";
                 return  $this->apiResponse($data, 404);
             }
             $transactionId = Str::uuid();
-            $data['beneId'] = "BEN".$Beneficiary->uuid;
+            $data['beneId'] = "BEN" . $Beneficiary->uuid;
             $data['amount'] = $user->name;
             $data['transferId'] = $transactionId;
-        
+
             $response = $this->payout->requestAsyncTransfer($data);
             $payout = PayoutTransaction::create([
                 'amount' => $request->amount,
                 'beneficiary_id' => $Beneficiary->id,
                 'contract_id' => $Contract->id,
-                'user_id'=> $Beneficiary->user_id,
-                'response'=> $response
+                'user_id' => $Beneficiary->user_id,
+                'response' => $response
             ]);
-
         } catch (\Throwable $th) {
             $data['message'] = $th->getMessage();
             return  $this->apiResponse($data, 404);
@@ -323,7 +339,7 @@ class PaymentOrderController extends Controller
         try {
             $user = auth()->user();
             $response = $this->payment->createSubscription($user);
-            $response = json_decode($response,true);
+            $response = json_decode($response, true);
             $data['data'] = $response;
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
@@ -337,7 +353,7 @@ class PaymentOrderController extends Controller
     {
         try {
             $user = auth()->user();
-            $response = Subscription::where('user_id',$user->id)->first();
+            $response = Subscription::where('user_id', $user->id)->first();
             $data['data'] = $response;
             $data['message'] = 'done';
             return  $this->apiResponse($data, 200);
@@ -350,7 +366,21 @@ class PaymentOrderController extends Controller
     public function hook(Request $request)
     {
         try {
-           dd($request->all());
+            $order_token = $request->order_token;
+            $order_id = $request->order_id;
+            $transaction = Transactions::where('order_token',$order_token)->where('order_id',$order_id)->first();
+            $transaction->status ="completed";
+            $transaction->save();
+        } catch (\Exception $e) {
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data, 404);
+        }
+    }
+
+    public function card(Request $request)
+    {
+        try {
+            dd($request->all());
         } catch (\Exception $e) {
             $data['message'] = $e->getMessage();
             return  $this->apiResponse($data, 404);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\JobBookmark;
+use App\Models\UserBookmark;
 use Illuminate\Http\Request;
 
 class JobBookmarkController extends Controller
@@ -101,5 +102,31 @@ class JobBookmarkController extends Controller
     public function destroy(JobBookmark $jobBookmark)
     {
         //
+    }
+
+
+    public function userstore(Request $request)
+    {
+        try{
+            $userId=   auth()->user()->id;
+            $isExist = UserBookmark::where('user_id',$request->user_id)->where('client_id',$userId)->first();
+            $data = $request->except('_token');
+            $data['client_id'] =$userId;
+            $isBookmark = true;
+            if(!$isExist){
+                $UserBookmark = UserBookmark::create($data);
+            }else{
+                $isBookmark = false;
+                $isExist->delete();
+            }
+            
+            //$this->images($request,$JobBookmark);
+            $data['data'] = $isBookmark;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 }

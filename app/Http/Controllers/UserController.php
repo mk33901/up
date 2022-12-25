@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use App\Models\Certificate;
 use App\Models\Client;
 use App\Models\Education;
@@ -25,7 +26,7 @@ class UserController extends Controller
             $language = Language::all();
             $education = Education::all();
             $certificate = Certificate::all();
-            $user = User::with('preference', 'language', 'education', 'testimonial', 'employement', 'expirence', 'portfolio')->paginate(8);
+            $user = User::with('preference', 'language', 'education', 'testimonial', 'employement', 'expirence', 'portfolio','userBookmark')->paginate(8);
             $data['data']['user'] = $user;
             $data['data']['education'] = $education;
             $data['data']['certificate'] = $certificate;
@@ -70,8 +71,8 @@ class UserController extends Controller
             $language = Language::all();
             $education = Education::all();
             $certificate = Certificate::all();
-            $user = User::with('preference', 'language', 'education', 'testimonial', 'employement', 'expirence', 'portfolio','portfolio.assets')->find($id);
-            $data['data']['user'] = $user;
+            $user = User::with('preference', 'language', 'education', 'testimonial', 'employement', 'expirence', 'portfolio','portfolio.assets')->where('uuid',$id)->first();
+            $data['data']['user'] = new UserResource($user) ;
             $data['data']['education'] = $education;
             $data['data']['certificate'] = $certificate;
             $data['data']['language'] = $language;

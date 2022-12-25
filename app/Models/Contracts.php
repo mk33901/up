@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Proposals;
 use App\Traits\UuidTraits;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -57,5 +57,10 @@ class Contracts extends Model
     public function timeentry(): HasMany
     {
         return $this->hasMany(TimeEntry::class, 'contract_id', 'id');
+    }
+    
+    public function transactions()
+    {
+      return $this->morphMany(Transactions::class, 'model');
     }
 }

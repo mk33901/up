@@ -99,7 +99,7 @@ class LanguageController extends Controller
         try{
             $data = $request->except(['_token','id','created_at','updated_at']);
             $data['user_id'] = auth()->user()->id;
-            $Language = UserLanguage::find($id);
+            $Language = UserLanguage::where('uuid',$id)->first();
             $Language->update($data);
             //$this->images($request,$Language);
             $data['data'] = new UserLanguageResource($Language->load('language'));

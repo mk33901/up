@@ -10,9 +10,9 @@ class PayOut
     private string $secret;
     private string $endUrl;
     public function __construct() {
-        $this->appId = config('app.appId');
-        $this->secret = config('app.secret');
-        $this->endUrl = config('app.endUrl');
+        $this->appId = "CF177035CBB2FVL6LA05QI8T3VPG";
+        $this->secret = "01a804fa9fa5fefc44e74e38a5468380e01d0e80";
+        $this->endUrl = "https://payout-gamma.cashfree.com";
     }
 
     public function call(string $token)

@@ -15,6 +15,8 @@ use App\Models\UserLanguage;
 use App\Models\UserEducation;
 use App\Traits\UuidTraits;
 use App\Models\Portfolio;
+use App\Models\HexaTransaction;
+use App\Models\JobReview;
 
 class User extends Authenticatable
 {
@@ -170,5 +172,52 @@ class User extends Authenticatable
     public function proposal(): HasMany
     {
         return $this->hasMany(Proposals::class);
+    }
+
+    /**
+     * Get all of the invites for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function invites(): HasMany
+    {
+        return $this->hasMany(Invites::class);
+    }
+
+    /**
+     * Get all of the hexatransaction for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function hexatransaction(): HasMany
+    {
+        return $this->hasMany(HexaTransaction::class);
+    }
+
+    public function getBalance()
+    {
+        $credit = $this->hexatransaction->where('type','credit')->sum('hexa_coin');
+        $debit = $this->hexatransaction->where('type','debit')->sum('hexa_coin');
+        return $debit - $credit;
+    }
+
+    /**
+     * Get all of the jobReview for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function review(): HasMany
+    {
+        return $this->hasMany(JobReview::class);
+    }
+
+    /**
+     * Get all of the userBookmark for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userBookmark(): HasMany
+    {
+        return $this->hasMany(UserBookmark::class, 'user_id', 'id');
     }
 }

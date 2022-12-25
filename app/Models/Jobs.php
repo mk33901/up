@@ -11,7 +11,7 @@ use App\Models\JobFeedback;
 use App\Models\JobQuestions;
 use App\Models\JobPreference;
 use App\Models\JobTransactions;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -156,5 +156,28 @@ class Jobs extends Model
     public function jobtransactions(): HasMany
     {
         return $this->hasMany(JobTransactions::class);
+    }
+
+    public function getHexaCoinAttribute()
+    {
+        $hexaCoin = 2;
+        $budget = $this->budget;
+        if($budget > 10)
+        {
+            $hexaCoin = 10;
+        }else{
+            $hexaCoin = 10;
+        }
+        return $hexaCoin;
+    }
+
+    /**
+     * Get all of the review for the Jobs
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function review(): HasMany
+    {
+        return $this->hasMany(JobReview::class);
     }
 }

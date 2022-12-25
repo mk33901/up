@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Proposals;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProposalResource;
+use App\Models\HexaTransaction;
 use App\Models\ProposalQuestion;
 
 class ProposalsController extends Controller
@@ -22,9 +24,9 @@ class ProposalsController extends Controller
                 $per_page=$request->per_page;
             }
             $user_id = auth()->user()->id;
-            $Proposals = Proposals::with('jobs','question')->where('user_id',$user_id)->paginate($per_page);
+            $Proposals = Proposals::with('jobs','question','user')->where('user_id',$user_id)->paginate($per_page);
 
-            $data['data'] = $Proposals;
+            $data['data'] = ProposalResource::collection($Proposals) ;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -53,8 +55,15 @@ class ProposalsController extends Controller
     {
         try{
             $user = auth()->user();
-            $data = $request->except(['_token']);
+            $data = $request->except(['_token','cover']);
             $data['user_id'] = $user->id;
+            $proposal = Proposals::where('job_id',$data['job_id'])->where('user_id',$data['user_id'])->first();
+            if($proposal)
+            {
+                $response['error'] = true;
+                $response['message'] = 'Proposal Already exist for this job and User';
+                return  $this->apiResponse($response,200);
+            }
             $Proposals = Proposals::create($data);
             //$this->images($request,$Proposals);
             $question = json_decode($request->questions);
@@ -67,7 +76,8 @@ class ProposalsController extends Controller
                 $ProposalQuestions->proposal_id = $Proposals->id;
                 $ProposalQuestions->save();
             }
-            $this->assets($Proposals,'files',$request->all());
+            HexaTransaction::addHexa($Proposals);
+            // $this->assets($Proposals,'files',$request->all());
             $data['data'] = $Proposals;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
@@ -87,8 +97,8 @@ class ProposalsController extends Controller
     {
         try{
             $user_id = auth()->user()->id;
-            $Proposals = Proposals::with('jobs','question')->where('user_id',$user_id)->where('id',$id)->first();
-            $data['data'] = $Proposals;
+            $Proposals = Proposals::with('jobs','question','user')->where('user_id',$user_id)->where('uuid',$id)->first();
+            $data['data'] = new ProposalResource($Proposals) ;
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -163,9 +173,13 @@ class ProposalsController extends Controller
 
     public function status(Request $request,$id)
     {
-        try{
+        try{            
             $data['status'] = $request->status;
             $Proposals = Proposals::find($id);
+            if(in_array($request->status,['cancelled','withdrow']))
+            {
+                HexaTransaction::cancelProposal($Proposals);
+            }
             $Proposals->update($data);
             $data['data'] = $Proposals;
             $data['message'] = 'update';

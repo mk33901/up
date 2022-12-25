@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Jobs;
 use App\Traits\UuidTraits;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -17,7 +17,7 @@ class Client extends Model
      *
      * @var array
      */
-    protected $fillable = ['uuid','name','description','company_name','company_website','company_tag_line','company_description','company_owner','company_phone','company_vat','company_timezone','company_country','company_address','company_city','company_zip'];
+    protected $guarded = [];
     
     /**
      * Get all of the jobs for the Client

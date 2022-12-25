@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Transactions extends Model
@@ -27,6 +27,8 @@ class Transactions extends Model
         'payment_response',
         'amount',
         'type',
+        'model_type',
+        'model_id',
     ];
 
     /**

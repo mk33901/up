@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Model;
 use App\Traits\UuidTraits;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 

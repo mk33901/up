@@ -12,9 +12,23 @@ class InvitesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $user_id = auth()->user()->id;
+            $invites = Invites::with('job','users')->paginate($per_page);
+
+            $data['data'] = $invites;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -38,6 +52,13 @@ class InvitesController extends Controller
         try{
             $data = $request->except(['_token']);
             // $data['user_id'] = auth()->user()->id;
+            $proposal = Invites::where('job_id',$data['job_id'])->where('user_id',$data['user_id'])->first();
+            if($proposal)
+            {
+                $response['error'] = true;
+                $response['message'] = 'Invites Already exist for this job and User';
+                return  $this->apiResponse($response,200);
+            }
             $Invites = Invites::create($data);
             //$this->images($request,$Invites);
             $data['data'] = $Invites;
@@ -78,9 +99,20 @@ class InvitesController extends Controller
      * @param  \App\Models\Invites  $invites
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Invites $invites)
+    public function update(Request $request, $id )
     {
-        //
+        try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $invites = Invites::find($id);
+            $invites->update($request->except($data));
+            //$this->images($request,$invites);
+            $data['data'] = $invites;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

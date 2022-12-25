@@ -12,9 +12,22 @@ class ClientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try{
+            $per_page = 8;
+            if($request->per_page){
+                $per_page=$request->per_page;
+            }
+            $Client = Client::paginate($per_page);
+
+            $data['data'] = $Client;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -35,7 +48,18 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try{
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $Client = Client::create($data);
+            //$this->images($request,$Client);
+            $data['data'] = $Client;
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -44,9 +68,18 @@ class ClientController extends Controller
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function show(Client $client)
+    public function show(Request $request,$id)
     {
-        //
+        try{
+            $Client = Client::where('user_id',$id)->first();
+
+            $data['data'] = $Client;
+            $data['message'] = 'block';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**
@@ -67,9 +100,21 @@ class ClientController extends Controller
      * @param  \App\Models\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Client $client)
+    public function update(Request $request, $id)
     {
-        //
+        try{
+            $data = $request->except(['_token','id','created_at','updated_at']);
+            $data['user_id'] = auth()->user()->id;
+            $Client = Client::find($id);
+            $Client->update($data);
+            //$this->images($request,$Client);
+            $data['data'] = $Client;
+            $data['message'] = 'update';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
     }
 
     /**

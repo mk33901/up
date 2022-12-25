@@ -29,6 +29,7 @@ Route::group([ 'prefix' => 'auth'], function (){
         Route::post('getuser', 'Api\AuthController@getUser');
     });
 });
+Route::get('store/card', 'PaymentOrderController@hook');
 
 Route::post('jobs/getData', 'JobsController@create');
 Route::post('validate', 'UserController@validateUser');
@@ -164,6 +165,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('transations/{id}/update', 'TransationsController@update');
     Route::post('transations/{id}/remove', 'TransationsController@destroy');
 
+    
+    Route::get('client', 'ClientController@index');
+    Route::post('client', 'ClientController@store');
+    Route::post('client/search', 'ClientController@search');
+    Route::post('client/{id}', 'ClientController@show');
+    Route::post('client/{id}/update', 'ClientController@update');
+    Route::post('client/{id}/remove', 'ClientController@destroy');
+
 
     Route::get('timeentry', 'TimeEntryController@index');
     Route::post('timeentry', 'TimeEntryController@store');
@@ -199,6 +208,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('users/start', 'UserController@start');
 
     Route::post('bookmark', 'JobBookmarkController@store');
+    Route::post('talent/bookmark', 'JobBookmarkController@userstore');
     Route::post('country', 'CountryController@index');
 
     Route::get('feedback', 'JobFeedbackController@index');
@@ -211,8 +221,10 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     Route::get('payment/order', 'PaymentOrderController@index');
     Route::post('payment/order', 'PaymentOrderController@store');
+    Route::post('payment/create/order', 'ContractsController@contactOrder');
     Route::post('payment/auth', 'PaymentOrderController@authorizePayment');
     Route::post('payment/pay', 'PaymentOrderController@pay');
+    Route::post('payment/card', 'PaymentOrderController@card');
     Route::post('payment/order/search', 'PaymentOrderController@search');
     Route::post('payment/order/{id}', 'PaymentOrderController@show');
     Route::post('payment/order/{id}/update', 'PaymentOrderController@update');
@@ -239,6 +251,9 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('jobtransations/{id}/remove', 'JobTransactionsController@destroy');
 
     Route::get('get/jobs', 'ContractsController@jobs');
-    Route::get('store/card', 'PaymentOrderController@hook');
+
+    Route::get('invite', 'InvitesController@index');
+    Route::post('invite/{id}', 'InvitesController@update');
+    Route::post('review', 'JobReviewController@store');
 });
 

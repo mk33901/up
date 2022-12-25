@@ -60,6 +60,13 @@ ORDER BY `m`.`to_id`  DESC
     {
         try {
             $data = $request->except('_token');
+            $toUser = User::where('uuid',$data['to_id'])->first();
+            if(!$toUser)
+            {
+                $data['message'] = 'Sender not available';
+                return  $this->apiResponse($data, 200);
+            }
+            $data['to_id'] = $toUser->id;
             $data['from_id'] = auth()->user()->id;
             $Message = Message::create($data);
             //$this->images($request,$Message);
@@ -82,8 +89,8 @@ ORDER BY `m`.`to_id`  DESC
     {
         try {
             $auth_id= auth()->user()->id;
-            $user = User::find($id);
-            $message = DB::select("SELECT *  FROM `messages` WHERE (`from_id` = ".$id." and to_id=".$auth_id.") or (from_id=".$auth_id." and to_id=".$id.")");
+            $user = User::where('uuid',$id)->first();
+            $message = DB::select("SELECT *  FROM `messages` WHERE (`from_id` = ".$user->id." and to_id=".$auth_id.") or (from_id=".$auth_id." and to_id=".$user->id.")");
            
             //$this->images($request,$Message);
             $data['data']['message'] = $message;

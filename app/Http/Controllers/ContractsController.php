@@ -7,6 +7,7 @@ use App\Models\Contracts;
 use App\Models\Transactions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Http\Resources\ContractResource;
 
 class ContractsController extends Controller
 {
@@ -22,9 +23,9 @@ class ContractsController extends Controller
             if($request->per_page){
                 $per_page=$request->per_page;
             }
-            $Contracts = Contracts::with('timeentry','proposal','user','client','proposal.jobs')->paginate($per_page);
+            $Contracts = Contracts::with('timeentry','proposal','user','client','proposal.jobs')->orderBy('id','desc')->paginate($per_page);
 
-            $data['data'] = $Contracts;
+            $data['data'] = ContractResource::collection($Contracts);
             $data['message'] = 'block';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -63,14 +64,66 @@ class ContractsController extends Controller
             $order = New PaymentOrder();
             $response = $order->createOrder($orderData);
             $responseData = json_decode($response,true);
+            $user = auth()->user();
             $transactions = Transactions::create([
-                'user_id' => auth()->user()->id,
+                'user_id' => $user->id,
                 'status' =>'pending',
+                'response' =>$response,
+                'order_id' =>$responseData['order_id'],
+                'order_token' =>$responseData['order_token'],
+                'amount' =>$responseData['order_amount'],
+                'type' =>'normal',
                 'transaction_date' => Carbon::now()->format("Y-m-d"),
-                'payment_type'=> 'contract-'.$contracts->uuid
+                'payment_type'=> 'contract-'.$user->uuid,
+                'model_type'=> get_class($contracts),
+                'model_id'=> $contracts->id
             ]);
             //$this->images($request,$contracts);
             $data['data'] = (isset($responseData)?$responseData['payment_link']:"");
+            $data['message'] = 'created';
+            return  $this->apiResponse($data,200);
+        }catch(\Exception $e){
+            $data['message'] = $e->getMessage();
+            return  $this->apiResponse($data,404);
+        }
+    }
+
+    /**
+     * contactOrder a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function contactOrder(Request $request)
+    {
+        try{
+            $data = $request->except('_token');
+            $data['user_id'] = auth()->user()->id;
+            $contracts = Contracts::whereId($request->id)->first();
+
+            $orderData = [];
+            $orderData['user'] = auth()->user();
+            $orderData['order'] = $contracts;
+            $orderData['type'] = "contract";
+            $order = New PaymentOrder();
+            $response = $order->createOrder($orderData);
+            $responseData = json_decode($response,true);
+            $user = auth()->user();
+            $transactions = Transactions::create([
+                'user_id' => $user->id,
+                'status' =>'pending',
+                'response' =>$response,
+                'order_id' =>$responseData['order_id'],
+                'order_token' =>$responseData['order_token'],
+                'amount' =>$responseData['order_amount'],
+                'type' =>'normal',
+                'transaction_date' => Carbon::now()->format("Y-m-d"),
+                'payment_type'=> 'contract-'.$user->uuid,
+                'model_type'=> get_class($contracts),
+                'model_id'=> $contracts->id
+            ]);
+            //$this->images($request,$contracts);
+            $data['data'] = $contracts;
             $data['message'] = 'created';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
@@ -91,9 +144,9 @@ class ContractsController extends Controller
         try{
             $data = $request->except(['_token']);
             // $data['user_id'] = auth()->user()->id;
-            $Contracts = Contracts::with('timeentry','proposal','user','client','proposal.jobs')->where('id',$id)->first();
+            $Contracts = Contracts::with('timeentry','proposal','user','client','proposal.jobs')->where('uuid',$id)->first();
             //$this->images($request,$Contracts);
-            $data['data'] = $Contracts;
+            $data['data'] = new ContractResource($Contracts);
             $data['message'] = 'show Contracts';
             return  $this->apiResponse($data,200);
         }catch(\Exception $e){
